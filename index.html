@@ -1856,6 +1856,112 @@ tr:hover td { background: var(--ghost); }
   .contact-grid { grid-template-columns: 1fr; }
   .header-user-name { display: none; }
 }
+
+/* ================================================================
+   ANIMATED WATER DROP LOGO — LOGIN PAGE (lg-*) + HEADER (hd-*)
+================================================================ */
+
+/* --- Login page drop fall --- */
+@keyframes lgDropFall {
+  0%   { transform: translateY(-28px); opacity: 0; }
+  6%   { transform: translateY(-28px); opacity: 1; }
+  36%  { transform: translateY(0px);   opacity: 1; }
+  39%  { transform: translateY(2px) scaleX(1.45) scaleY(0.2); opacity: 0.25; }
+  41%  { transform: translateY(-28px) scaleX(1) scaleY(1);    opacity: 0; }
+  100% { transform: translateY(-28px); opacity: 0; }
+}
+@keyframes lgRipple1 {
+  0%, 38% { transform: scale(0);    opacity: 0; }
+  40%     { transform: scale(0.04); opacity: 0.78; }
+  68%     { transform: scale(1);    opacity: 0; }
+  100%    { transform: scale(1);    opacity: 0; }
+}
+@keyframes lgRipple2 {
+  0%, 43% { transform: scale(0);    opacity: 0; }
+  45%     { transform: scale(0.04); opacity: 0.60; }
+  74%     { transform: scale(1);    opacity: 0; }
+  100%    { transform: scale(1);    opacity: 0; }
+}
+@keyframes lgRipple3 {
+  0%, 48% { transform: scale(0);    opacity: 0; }
+  50%     { transform: scale(0.04); opacity: 0.40; }
+  80%     { transform: scale(1);    opacity: 0; }
+  100%    { transform: scale(1);    opacity: 0; }
+}
+@keyframes lgSurfPulse {
+  0%, 32% { opacity: 0.28; }
+  40%     { opacity: 0.65; }
+  68%     { opacity: 0.28; }
+  100%    { opacity: 0.28; }
+}
+@keyframes lgShineFlicker {
+  0%, 30% { opacity: 0.28; }
+  38%     { opacity: 0; }
+  42%     { opacity: 0.28; }
+  100%    { opacity: 0.28; }
+}
+
+/* Drop group: pivots at the bottom so squash goes toward surface */
+.lg-drop-g {
+  animation: lgDropFall 3s cubic-bezier(0.52, 0, 0.86, 0.48) infinite;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.lg-r1 { animation: lgRipple1 3s ease-out infinite; transform-box: fill-box; transform-origin: center center; }
+.lg-r2 { animation: lgRipple2 3s ease-out infinite; transform-box: fill-box; transform-origin: center center; }
+.lg-r3 { animation: lgRipple3 3s ease-out infinite; transform-box: fill-box; transform-origin: center center; }
+.lg-surf-fill  { animation: lgSurfPulse   3s ease-out infinite; }
+.lg-drop-shine { animation: lgShineFlicker 3s ease-out infinite; }
+
+/* --- Header drop fall --- */
+@keyframes hdDropFall {
+  0%   { transform: translateY(-13px); opacity: 0; }
+  7%   { transform: translateY(-13px); opacity: 1; }
+  36%  { transform: translateY(0px);   opacity: 1; }
+  39%  { transform: translateY(1.5px) scaleX(1.45) scaleY(0.2); opacity: 0.25; }
+  41%  { transform: translateY(-13px) scaleX(1) scaleY(1);      opacity: 0; }
+  100% { transform: translateY(-13px); opacity: 0; }
+}
+@keyframes hdRipple1 {
+  0%, 38% { transform: scale(0);    opacity: 0; }
+  40%     { transform: scale(0.06); opacity: 0.82; }
+  66%     { transform: scale(1);    opacity: 0; }
+  100%    { transform: scale(1);    opacity: 0; }
+}
+@keyframes hdRipple2 {
+  0%, 43% { transform: scale(0);    opacity: 0; }
+  45%     { transform: scale(0.06); opacity: 0.62; }
+  72%     { transform: scale(1);    opacity: 0; }
+  100%    { transform: scale(1);    opacity: 0; }
+}
+@keyframes hdRipple3 {
+  0%, 48% { transform: scale(0);    opacity: 0; }
+  50%     { transform: scale(0.06); opacity: 0.42; }
+  78%     { transform: scale(1);    opacity: 0; }
+  100%    { transform: scale(1);    opacity: 0; }
+}
+@keyframes hdSurfPulse {
+  0%, 32% { opacity: 0.22; }
+  40%     { opacity: 0.55; }
+  66%     { opacity: 0.22; }
+  100%    { opacity: 0.22; }
+}
+
+.hd-drop-g {
+  animation: hdDropFall 3s cubic-bezier(0.52, 0, 0.86, 0.48) infinite;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.hd-r1 { animation: hdRipple1 3s ease-out infinite; transform-box: fill-box; transform-origin: center center; }
+.hd-r2 { animation: hdRipple2 3s ease-out infinite; transform-box: fill-box; transform-origin: center center; }
+.hd-r3 { animation: hdRipple3 3s ease-out infinite; transform-box: fill-box; transform-origin: center center; }
+.hd-surf-fill { animation: hdSurfPulse 3s ease-out infinite; }
+
+/* Container sizing */
+.login-logo-emblem { width: 88px; height: 88px; flex-shrink: 0; }
+.login-logo-emblem svg { width: 88px; height: 88px; }
+.header-logo-anim { width: 40px; height: 40px; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(14,165,233,0.38)); }
+.header-logo-anim svg { width: 40px; height: 40px; display: block; }
 </style>
 </head>
 <body>
@@ -1879,32 +1985,80 @@ tr:hover td { background: var(--ghost); }
     <div class="login-hero">
       <div class="login-logo-wrap">
         <div class="login-logo-emblem">
-          <!-- Original water utility SVG logo -->
+          <!-- Animated water drop + ripple logo -->
           <svg viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="44" cy="44" r="44" fill="rgba(255,255,255,0.06)"/>
-            <circle cx="44" cy="44" r="38" fill="rgba(255,255,255,0.08)" stroke="rgba(56,189,248,0.3)" stroke-width="1"/>
-            <!-- Outer ring -->
-            <circle cx="44" cy="44" r="32" fill="none" stroke="rgba(56,189,248,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
-            <!-- Water drop center -->
-            <path d="M44 20C44 20 30 33 30 42C30 49.73 36.27 56 44 56C51.73 56 58 49.73 58 42C58 33 44 20 44 20Z" fill="url(#dropGrad)"/>
-            <!-- Shine -->
-            <path d="M38 38C38.5 35 40 32.5 42 30.5" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
-            <!-- Wave at bottom of drop -->
-            <path d="M35 46C35 46 37.5 49 41 48C44.5 47 47 50 50 49" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-            <!-- Pipeline arms -->
-            <path d="M30 54H20M20 54V62M20 62H14M20 54C20 54 18 54 18 52V48C18 46 20 46 20 46H24" stroke="rgba(56,189,248,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M58 54H68M68 54V62M68 62H74M68 54C68 54 70 54 70 52V48C70 46 68 46 68 46H64" stroke="rgba(56,189,248,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- Pipeline joints -->
-            <circle cx="20" cy="54" r="2.5" fill="rgba(56,189,248,0.8)"/>
-            <circle cx="68" cy="54" r="2.5" fill="rgba(56,189,248,0.8)"/>
-            <!-- Base line -->
-            <path d="M16 66H72" stroke="rgba(56,189,248,0.5)" stroke-width="1.5" stroke-linecap="round"/>
             <defs>
-              <linearGradient id="dropGrad" x1="44" y1="20" x2="44" y2="56" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#38bdf8"/>
+              <!-- Drop gradient: sky-blue top → teal bottom -->
+              <linearGradient id="lgDropGrad" x1="44" y1="32" x2="44" y2="64" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#7dd3fc"/>
+                <stop offset="45%"  stop-color="#0ea5e9"/>
                 <stop offset="100%" stop-color="#0d9488"/>
               </linearGradient>
+              <!-- Inner surface pool -->
+              <radialGradient id="lgPoolGrad" cx="50%" cy="40%" r="55%">
+                <stop offset="0%"   stop-color="#38bdf8" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#0077b6" stop-opacity="0.08"/>
+              </radialGradient>
+              <!-- Outer glow for drop -->
+              <filter id="lgGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
             </defs>
+
+            <!-- ── Background decorative rings ── -->
+            <circle cx="44" cy="44" r="43" fill="rgba(255,255,255,0.04)"/>
+            <circle cx="44" cy="44" r="38" fill="rgba(255,255,255,0.06)"
+                    stroke="rgba(56,189,248,0.2)" stroke-width="1"/>
+            <circle cx="44" cy="44" r="30" fill="none"
+                    stroke="rgba(56,189,248,0.12)" stroke-width="1"
+                    stroke-dasharray="3.5 3.5"/>
+
+            <!-- ── Water surface pool (y = 62 centre) ── -->
+            <!-- Static pool fill -->
+            <ellipse cx="44" cy="62" rx="22" ry="5.5"
+                     fill="url(#lgPoolGrad)" class="lg-surf-fill"/>
+            <!-- Pool rim -->
+            <ellipse cx="44" cy="62" rx="22" ry="5.5"
+                     fill="none" stroke="rgba(56,189,248,0.35)" stroke-width="0.9"/>
+
+            <!-- ── Ripple rings — expand from impact centre (44, 62) ── -->
+            <!-- Ripple 1: tightest, fastest -->
+            <ellipse class="lg-r1" cx="44" cy="62"
+                     rx="14" ry="5.5"
+                     fill="none" stroke="#38bdf8" stroke-width="1.3"/>
+            <!-- Ripple 2 -->
+            <ellipse class="lg-r2" cx="44" cy="62"
+                     rx="20" ry="8"
+                     fill="none" stroke="#0ea5e9" stroke-width="1"/>
+            <!-- Ripple 3: widest, slowest -->
+            <ellipse class="lg-r3" cx="44" cy="62"
+                     rx="27" ry="10.5"
+                     fill="none" stroke="#0d9488" stroke-width="0.75"/>
+
+            <!-- ── Animated water drop ── -->
+            <!--   Drop tip rests at (44, 62) = pool surface.
+                   Animation translates it UP by 28 px at start,
+                   so the tip starts at (44, 34) and falls to (44, 62).   -->
+            <g class="lg-drop-g" filter="url(#lgGlow)">
+              <!-- Main teardrop: tip at (44,62), body curves up to (44,34) -->
+              <path d="M44,34
+                        C44,34 33,46 33,53.5
+                        C33,58.6 38.0,63.5 44,63.5
+                        C50.0,63.5 55,58.6 55,53.5
+                        C55,46 44,34 44,34 Z"
+                    fill="url(#lgDropGrad)"/>
+              <!-- Primary gloss ellipse (upper-left of drop body) -->
+              <ellipse class="lg-drop-shine"
+                       cx="39.5" cy="47"
+                       rx="2.8" ry="5"
+                       fill="rgba(255,255,255,0.32)"
+                       transform="rotate(-18,39.5,47)"/>
+              <!-- Small tip gloss -->
+              <ellipse cx="44" cy="37"
+                       rx="1.2" ry="1.8"
+                       fill="rgba(255,255,255,0.22)"/>
+            </g>
           </svg>
         </div>
         <div class="login-logo-text">
@@ -2033,22 +2187,60 @@ tr:hover td { background: var(--ghost); }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
 
-      <!-- Header Logo SVG (water drop + pipe) -->
-      <svg class="header-logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="40" height="40" rx="10" fill="rgba(14,165,233,0.15)"/>
-        <path d="M20 7C20 7 12 14.5 12 20C12 24.42 15.58 28 20 28C24.42 28 28 24.42 28 20C28 14.5 20 7 20 7Z" fill="url(#hDropGrad)"/>
-        <path d="M16 20C16 22.2 17.8 24 20 24" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M12 28H8M8 28V33M8 33H5" stroke="rgba(56,189,248,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M28 28H32M32 28V33M32 33H35" stroke="rgba(56,189,248,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="8" cy="28" r="1.5" fill="#38bdf8"/>
-        <circle cx="32" cy="28" r="1.5" fill="#38bdf8"/>
-        <defs>
-          <linearGradient id="hDropGrad" x1="20" y1="7" x2="20" y2="28" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#38bdf8"/>
-            <stop offset="100%" stop-color="#0d9488"/>
-          </linearGradient>
-        </defs>
-      </svg>
+      <!-- Animated water drop logo — header -->
+      <div class="header-logo-anim">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="hdDropGrad" x1="20" y1="10" x2="20" y2="30" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#7dd3fc"/>
+              <stop offset="45%"  stop-color="#0ea5e9"/>
+              <stop offset="100%" stop-color="#0d9488"/>
+            </linearGradient>
+            <radialGradient id="hdPoolGrad" cx="50%" cy="38%" r="55%">
+              <stop offset="0%"   stop-color="#38bdf8" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#0077b6" stop-opacity="0.06"/>
+            </radialGradient>
+            <filter id="hdGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Background rounded square -->
+          <rect width="40" height="40" rx="10" fill="rgba(14,165,233,0.13)"/>
+
+          <!-- Water surface pool (y = 29.5) -->
+          <ellipse cx="20" cy="29.5" rx="10" ry="2.8"
+                   fill="url(#hdPoolGrad)" class="hd-surf-fill"/>
+          <ellipse cx="20" cy="29.5" rx="10" ry="2.8"
+                   fill="none" stroke="rgba(56,189,248,0.38)" stroke-width="0.7"/>
+
+          <!-- Ripple rings — at full expansion size, scaled from 0 by animation -->
+          <ellipse class="hd-r1" cx="20" cy="29.5" rx="7"  ry="3"   fill="none" stroke="#38bdf8" stroke-width="0.9"/>
+          <ellipse class="hd-r2" cx="20" cy="29.5" rx="10" ry="4.5" fill="none" stroke="#0ea5e9" stroke-width="0.7"/>
+          <ellipse class="hd-r3" cx="20" cy="29.5" rx="13" ry="6"   fill="none" stroke="#0d9488" stroke-width="0.55"/>
+
+          <!-- Animated drop:
+               Tip at (20, 29.5) in resting position.
+               Animation translateY(-13) → (0), so tip starts at y=16.5 -->
+          <g class="hd-drop-g" filter="url(#hdGlow)">
+            <!-- Teardrop: tip at (20,29.5), body extends up to y=16 -->
+            <path d="M20,16
+                      C20,16 14,22 14,25.5
+                      C14,28.6 16.7,31 20,31
+                      C23.3,31 26,28.6 26,25.5
+                      C26,22 20,16 20,16 Z"
+                  fill="url(#hdDropGrad)"/>
+            <!-- Gloss highlight -->
+            <ellipse cx="17.6" cy="21.5"
+                     rx="1.4" ry="2.6"
+                     fill="rgba(255,255,255,0.30)"
+                     transform="rotate(-18,17.6,21.5)"/>
+            <!-- Tip gloss -->
+            <ellipse cx="20" cy="18.2" rx="0.7" ry="1.1" fill="rgba(255,255,255,0.20)"/>
+          </g>
+        </svg>
+      </div>
 
       <div class="header-brand-text">
         <div class="title">Gumma Station</div>
