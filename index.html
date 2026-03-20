@@ -2145,8 +2145,9 @@ tr:hover td { background: var(--ghost); }
             Sign In to Portal
           </button>
 
-          <p style="margin-top:18px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.7">
-            This is a restricted government system.<br>Unauthorised access is strictly prohibited.
+          <p style="margin-top:18px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.8;letter-spacing:0.01em">
+            This is a restricted system that only officials can log in.<br>
+            <span style="color:var(--pale);font-size:11px">Unauthorised access is strictly prohibited.</span>
           </p>
         </div>
       </div>
@@ -2821,6 +2822,34 @@ tr:hover td { background: var(--ghost); }
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-contact-edit')">Cancel</button>
       <button class="btn btn-primary" onclick="saveContact()">Save Contact</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Log -->
+<div class="modal-overlay" id="modal-log-edit">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title">Edit Log Entry</span>
+      <button class="modal-close" onclick="closeModal('modal-log-edit')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="log-edit-id">
+      <div class="form-row">
+        <div class="form-group"><label>Log Type</label>
+          <select id="log-edit-type" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-body);font-size:14px;outline:none;background:var(--white);color:var(--ink)">
+            <option>Maintenance</option><option>Repair</option><option>Breakdown</option><option>Status Update</option><option>Inspection</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Date</label><input type="date" id="log-edit-date"></div>
+      </div>
+      <div class="form-group"><label>Related Pump / Stage</label><input type="text" id="log-edit-pump" placeholder="e.g. Pump 1 – First Stage"></div>
+      <div class="form-group"><label>Description</label><textarea id="log-edit-desc" placeholder="Detailed description…"></textarea></div>
+      <div class="form-group"><label>Engineer / Staff</label><input type="text" id="log-edit-staff" placeholder="Name of person responsible"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-log-edit')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditLog()">Save Changes</button>
     </div>
   </div>
 </div>
@@ -3554,7 +3583,21 @@ function renderHistory() {
   const filter=document.getElementById('log-filter').value;
   const logs=DATA.logs.filter(l=>!filter||l.type===filter);
   const el=document.getElementById('history-list');
-  const colors={ Maintenance:'ic-green',Repair:'ic-orange',Breakdown:'ic-red','Status Update':'ic-blue',Inspection:'ic-purple',Other:'ic-teal' };
+
+  const typeColors={
+    Maintenance:'ic-green', Repair:'ic-orange', Breakdown:'ic-red',
+    'Status Update':'ic-blue', Inspection:'ic-purple', Other:'ic-teal'
+  };
+  const typeBg={
+    Maintenance:'rgba(5,150,105,0.08)',   Repair:'rgba(217,119,6,0.08)',
+    Breakdown:'rgba(220,38,38,0.08)',     'Status Update':'rgba(14,165,233,0.08)',
+    Inspection:'rgba(124,58,237,0.08)',   Other:'rgba(13,148,136,0.08)'
+  };
+  const typeCol={
+    Maintenance:'var(--success)', Repair:'var(--warning)',
+    Breakdown:'var(--danger)',    'Status Update':'var(--aqua)',
+    Inspection:'var(--standby)', Other:'var(--teal)'
+  };
   const icons={
     Maintenance:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"/>',
     Repair:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
@@ -3563,21 +3606,92 @@ function renderHistory() {
     Inspection:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
     Other:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>'
   };
-  if(!logs.length) { el.innerHTML='<div class="empty-state"><p>No log entries found.</p></div>'; return; }
+
+  if(!logs.length) {
+    el.innerHTML=`<div class="empty-state">
+      <div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4M3 3v5h5"/></svg></div>
+      <h3>No Log Entries</h3><p>No activity logs match the current filter.</p>
+    </div>`;
+    return;
+  }
+
   el.innerHTML=logs.map(l=>`
-    <div class="log-item">
-      <div class="log-icon ${colors[l.type]||'ic-blue'}">
+    <div class="log-item" style="border-bottom:1px solid var(--border-2);padding:16px 0;display:flex;gap:14px;align-items:flex-start">
+      <!-- Type icon -->
+      <div class="log-icon ${typeColors[l.type]||'ic-blue'}" style="flex-shrink:0">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[l.type]||icons.Other}</svg>
       </div>
-      <div class="log-content">
-        <div class="log-title">${l.type}${l.pump ? ` — ${l.pump}`:''}</div>
-        <div class="log-desc">${l.desc}</div>
-        ${l.staff?`<div class="log-staff">By: ${l.staff}</div>`:''}
+
+      <!-- Content -->
+      <div class="log-content" style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+          <span style="display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;background:${typeBg[l.type]||'rgba(14,165,233,0.08)'};color:${typeCol[l.type]||'var(--aqua)'}">
+            ${l.type}
+          </span>
+          ${l.pump ? `<span style="font-size:12px;font-weight:600;color:var(--ink-2)">${l.pump}</span>` : ''}
+        </div>
+        <div class="log-desc" style="font-size:13px;color:var(--ink-2);line-height:1.6;margin-bottom:4px">${l.desc}</div>
+        ${l.staff ? `<div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          ${l.staff}
+        </div>` : ''}
       </div>
-      <div class="log-date">${fmtDate(l.date)}</div>
+
+      <!-- Right: date + admin actions -->
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+        <div class="log-date" style="font-family:var(--font-mono);font-size:11px;color:var(--muted);white-space:nowrap">${fmtDate(l.date)}</div>
+        ${isAdmin() ? `
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-xs" onclick="openEditLogModal('${l.id}')" title="Edit log entry">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+            Edit
+          </button>
+          <button class="btn btn-danger btn-xs" onclick="deleteLog('${l.id}')" title="Delete log entry">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            Delete
+          </button>
+        </div>` : ''}
+      </div>
     </div>
   `).join('');
 }
+
+function openEditLogModal(id) {
+  const l=DATA.logs.find(x=>x.id===id);
+  if(!l) return;
+  document.getElementById('log-edit-id').value=id;
+  document.getElementById('log-edit-type').value=l.type||'Maintenance';
+  document.getElementById('log-edit-date').value=l.date||'';
+  document.getElementById('log-edit-pump').value=l.pump||'';
+  document.getElementById('log-edit-desc').value=l.desc||'';
+  document.getElementById('log-edit-staff').value=l.staff||'';
+  openModal('modal-log-edit');
+}
+
+function saveEditLog() {
+  const id=document.getElementById('log-edit-id').value;
+  const desc=document.getElementById('log-edit-desc').value.trim();
+  if(!desc) return alert('Description is required.');
+  const idx=DATA.logs.findIndex(x=>x.id===id);
+  if(idx===-1) return;
+  DATA.logs[idx]={
+    ...DATA.logs[idx],
+    type:document.getElementById('log-edit-type').value,
+    date:document.getElementById('log-edit-date').value,
+    pump:document.getElementById('log-edit-pump').value.trim(),
+    desc,
+    staff:document.getElementById('log-edit-staff').value.trim(),
+  };
+  saveData(DATA); closeModal('modal-log-edit'); renderHistory();
+}
+
+function deleteLog(id) {
+  showConfirm('Delete this log entry? This action cannot be undone.', ()=>{
+    DATA.logs=DATA.logs.filter(x=>x.id!==id);
+    saveData(DATA); renderHistory();
+  });
+}
+
 
 /* ================================================================
    CONTACT
