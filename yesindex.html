@@ -1,0 +1,2645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+
+<!-- ═══ PWA Manifest ═══ -->
+<link rel="manifest" href="manifest.json">
+
+<!-- ═══ Theme ═══ -->
+<meta name="theme-color" content="#0ea5e9">
+
+<!-- ═══ Description ═══ -->
+<meta name="description" content="Professional pump operations and management system for Gumma Pumping Station. Monitor pump status, manage stages, submit queries, and track maintenance records.">
+<meta name="application-name" content="Gumma Station">
+
+<!-- ═══ Favicon ═══ -->
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="shortcut icon" href="icons/icon-192.png">
+
+<!-- ═══ Apple iOS — required for Add to Home Screen icon ═══ -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gumma Station">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+
+<!-- ═══ Windows / Android ═══ -->
+<meta name="msapplication-TileColor" content="#08162f">
+<meta name="msapplication-TileImage" content="icons/icon-144.png">
+<meta name="mobile-web-app-capable" content="yes">
+
+<title>Gumma Pumping Station Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES
+═══════════════════════════════════════════════ */
+:root {
+  --ink:       #0b1e35;
+  --ink2:      #1a3a5c;
+  --ink3:      #2d5a8a;
+  --mid:       #4a7fa5;
+  --muted:     #8aafc8;
+  --pale:      #c8dff0;
+  --ghost:     #edf5fb;
+  --surface:   #f0f7fd;
+  --white:     #ffffff;
+  --aqua:      #0ea5e9;
+  --aqua2:     #0077b6;
+  --teal:      #0d9488;
+  --sky:       #38bdf8;
+  --success:   #059669;
+  --warning:   #d97706;
+  --danger:    #dc2626;
+  --standby:   #7c3aed;
+  --border:    rgba(14,165,233,0.16);
+  --border2:   rgba(14,165,233,0.07);
+  --sh-sm:     0 2px 8px rgba(11,30,53,0.08);
+  --sh:        0 4px 20px rgba(11,30,53,0.10);
+  --sh-lg:     0 12px 40px rgba(11,30,53,0.14);
+  --r-xs:      6px;
+  --r-sm:      10px;
+  --r:         14px;
+  --r-lg:      20px;
+  --r-xl:      28px;
+  --f-body:    'Nunito', sans-serif;
+  --f-head:    'Space Grotesk', sans-serif;
+  --f-mono:    'JetBrains Mono', monospace;
+  --nav-h:     64px;
+  --top-h:     56px;
+  --safe-top:  env(safe-area-inset-top, 0px);
+  --safe-bot:  env(safe-area-inset-bottom, 0px);
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--f-body);
+  background:var(--surface);
+  color:var(--ink);
+  min-height:100vh;
+  min-height:100dvh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--pale);border-radius:2px}
+img{max-width:100%;display:block}
+button,input,select,textarea{font-family:inherit}
+a{text-decoration:none;color:inherit}
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════ */
+@keyframes waveScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes gradShift{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+@keyframes dropFall{
+  0%,5%{transform:translateY(-28px);opacity:0}
+  8%{transform:translateY(-28px);opacity:1}
+  38%{transform:translateY(0);opacity:1}
+  41%{transform:translateY(2px) scaleX(1.4) scaleY(0.18);opacity:.2}
+  43%{transform:translateY(-28px) scaleX(1) scaleY(1);opacity:0}
+  100%{transform:translateY(-28px);opacity:0}
+}
+@keyframes ripple1{0%,40%{transform:scale(0);opacity:0}42%{transform:scale(.04);opacity:.8}70%{transform:scale(1);opacity:0}100%{transform:scale(1);opacity:0}}
+@keyframes ripple2{0%,45%{transform:scale(0);opacity:0}47%{transform:scale(.04);opacity:.6}75%{transform:scale(1);opacity:0}100%{transform:scale(1);opacity:0}}
+@keyframes ripple3{0%,50%{transform:scale(0);opacity:0}52%{transform:scale(.04);opacity:.4}80%{transform:scale(1);opacity:0}100%{transform:scale(1);opacity:0}}
+@keyframes surfPulse{0%,32%{opacity:.3}41%{opacity:.65}68%{opacity:.3}100%{opacity:.3}}
+@keyframes shineFx{0%,28%{opacity:.28}38%{opacity:0}44%{opacity:.28}100%{opacity:.28}}
+
+/* ═══════════════════════════════════════════════
+   ANIMATED DROP CLASSES
+═══════════════════════════════════════════════ */
+.lg-drop-g{animation:dropFall 3.2s cubic-bezier(.52,0,.86,.48) infinite;transform-box:fill-box;transform-origin:center bottom}
+.lg-r1{animation:ripple1 3.2s ease-out infinite;transform-box:fill-box;transform-origin:center center}
+.lg-r2{animation:ripple2 3.2s ease-out infinite;transform-box:fill-box;transform-origin:center center}
+.lg-r3{animation:ripple3 3.2s ease-out infinite;transform-box:fill-box;transform-origin:center center}
+.lg-surf{animation:surfPulse 3.2s ease-out infinite}
+.lg-shine{animation:shineFx 3.2s ease-out infinite}
+
+/* ═══════════════════════════════════════════════
+   LOGIN PAGE
+═══════════════════════════════════════════════ */
+#login-page{
+  display:flex;flex-direction:column;
+  min-height:100vh;min-height:100dvh;
+  background:linear-gradient(165deg,#0b1e35 0%,#0d3460 40%,#0a6ba5 72%,#0ea5e9 100%);
+  position:relative;overflow:hidden;
+}
+#login-page::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 55% at 20% 30%,rgba(14,165,233,.22) 0%,transparent 60%),
+             radial-gradient(ellipse 55% 70% at 80% 70%,rgba(13,148,136,.18) 0%,transparent 60%);
+  animation:gradShift 14s ease infinite;background-size:200% 200%;pointer-events:none
+}
+
+.login-top-bar{
+  position:relative;z-index:20;
+  background:rgba(255,255,255,.06);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.7);font-size:10px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:calc(var(--safe-top) + 9px) 16px 9px;
+}
+.login-top-bar .dot{width:4px;height:4px;border-radius:50%;background:rgba(56,189,248,.9)}
+
+.login-body{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:24px 20px 160px;position:relative;z-index:10;gap:28px
+}
+
+.login-logo-wrap{display:flex;flex-direction:column;align-items:center;gap:0;animation:fadeUp .7s ease}
+.login-emblem{width:100px;height:100px;animation:floatY 3.8s ease-in-out infinite}
+.login-title-block{text-align:center;margin-top:14px}
+.login-title-block .org{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(56,189,248,.9);margin-bottom:5px}
+.login-title-block .name{font-family:var(--f-head);font-size:24px;font-weight:700;color:#fff;line-height:1.2}
+
+/* Tagline row */
+.login-tagline-row{
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;margin-top:14px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(56,189,248,.2);
+  backdrop-filter:blur(8px);
+  border-radius:30px;
+  padding:8px 18px;
+  flex-wrap:nowrap
+}
+.tagline-item{
+  display:flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;
+  color:rgba(255,255,255,.82);
+  letter-spacing:.02em;
+  white-space:nowrap
+}
+.tagline-item svg{
+  width:12px;height:12px;
+  color:rgba(56,189,248,.9);flex-shrink:0
+}
+.tagline-sep{
+  color:rgba(56,189,248,.4);
+  font-size:13px;font-weight:300;
+  line-height:1
+}
+
+.login-card{
+  background:rgba(255,255,255,.97);
+  border-radius:var(--r-xl);
+  box-shadow:0 28px 72px rgba(11,30,53,.38),0 6px 20px rgba(14,165,233,.12),inset 0 1px 0 rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.6);
+  width:100%;max-width:380px;
+  animation:slideUp .6s ease .1s both;
+  overflow:hidden;
+}
+
+.login-card-head{
+  padding:22px 22px 0;display:flex;align-items:center;gap:12px;margin-bottom:20px
+}
+.login-card-icon{
+  width:44px;height:44px;
+  background:linear-gradient(135deg,var(--aqua2),var(--aqua));
+  border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(14,165,233,.35);flex-shrink:0
+}
+.login-card-icon svg{width:22px;height:22px;color:#fff}
+.login-card-head-text h2{font-family:var(--f-head);font-size:16px;font-weight:700;color:var(--ink)}
+.login-card-head-text p{font-size:11px;color:var(--muted);margin-top:2px}
+.login-card-body{padding:0 22px 22px}
+
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);margin-bottom:6px}
+.field-wrap{position:relative;display:flex;align-items:center}
+.field-wrap .field-left-icon{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  width:15px;height:15px;color:var(--muted);pointer-events:none;flex-shrink:0;z-index:2
+}
+.field-wrap input{
+  width:100%;padding:13px 13px 13px 39px;
+  border:1.5px solid var(--pale);border-radius:var(--r-sm);
+  font-size:15px;color:var(--ink);background:var(--ghost);outline:none;
+  transition:all .2s;-webkit-appearance:none;line-height:1.4
+}
+.field-wrap input:focus{border-color:var(--aqua);background:#fff;box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+/* Password field: extra right padding so text never slides under the eye icon */
+.field-wrap.has-toggle input{padding-right:48px}
+.toggle-eye{
+  position:absolute;right:0;top:0;bottom:0;
+  width:46px;
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  z-index:2;touch-action:manipulation;
+  border-radius:0 var(--r-sm) var(--r-sm) 0;
+  transition:color .18s
+}
+.toggle-eye:hover{color:var(--aqua2)}
+.toggle-eye:active{color:var(--aqua)}
+.toggle-eye svg{width:17px;height:17px;display:block;flex-shrink:0}
+/* Thin separator line between input text area and eye icon */
+.toggle-eye::before{
+  content:'';position:absolute;left:0;top:25%;bottom:25%;
+  width:1px;background:var(--pale)
+}
+
+.login-error{
+  background:#fff0f0;border:1px solid #fca5a5;color:var(--danger);
+  border-radius:var(--r-sm);padding:10px 13px;font-size:12.5px;
+  margin-bottom:14px;display:none;align-items:center;gap:8px;font-weight:600
+}
+.login-error svg{width:15px;height:15px;flex-shrink:0}
+
+.login-btn{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--aqua2) 0%,var(--aqua) 100%);
+  color:#fff;border:none;border-radius:var(--r-sm);
+  font-size:15px;font-weight:800;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  box-shadow:0 4px 18px rgba(14,165,233,.4);
+  transition:all .22s;letter-spacing:.01em;
+  -webkit-appearance:none;touch-action:manipulation
+}
+.login-btn:active{transform:scale(.97);box-shadow:0 2px 10px rgba(14,165,233,.3)}
+.login-btn svg{width:15px;height:15px}
+
+.login-hint{
+  margin-top:14px;font-size:11px;color:var(--muted);
+  text-align:center;line-height:1.8
+}
+
+.login-waves{
+  position:absolute;bottom:0;left:0;right:0;height:180px;overflow:hidden;pointer-events:none;z-index:0
+}
+.lw{position:absolute;bottom:0;width:200%;height:100%}
+.lw svg{width:100%;height:100%}
+.lw1{animation:waveScroll 10s linear infinite;opacity:.45}
+.lw2{animation:waveScroll 16s linear infinite reverse;opacity:.28;bottom:-10px}
+.lw3{animation:waveScroll 22s linear infinite;opacity:.18;bottom:-20px}
+
+/* ═══════════════════════════════════════════════
+   INSTALL PROMPT BANNER
+═══════════════════════════════════════════════ */
+.install-banner{
+  display:none;position:fixed;bottom:calc(var(--nav-h) + var(--safe-bot) + 10px);left:12px;right:12px;
+  background:linear-gradient(135deg,var(--ink),var(--ink2));
+  border:1px solid rgba(14,165,233,.3);border-radius:var(--r);
+  padding:14px 16px;z-index:900;
+  box-shadow:var(--sh-lg);animation:slideUp .4s ease;
+  align-items:center;gap:12px;
+}
+.install-banner.show{display:flex}
+.install-banner-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--aqua2),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.install-banner-icon svg{width:20px;height:20px;color:#fff}
+.install-banner-text{flex:1}
+.install-banner-text strong{display:block;color:#fff;font-size:13px;font-weight:800}
+.install-banner-text span{color:rgba(255,255,255,.6);font-size:11px}
+.install-btn{padding:8px 14px;background:var(--aqua);color:#fff;border:none;border-radius:var(--r-sm);font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;touch-action:manipulation}
+.install-dismiss{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;padding:4px;flex-shrink:0}
+.install-dismiss svg{width:16px;height:16px}
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+.toast{
+  position:fixed;top:calc(var(--safe-top) + 14px);left:50%;transform:translateX(-50%) translateY(-80px);
+  background:linear-gradient(135deg,var(--aqua2),var(--teal));
+  color:#fff;padding:13px 20px;border-radius:var(--r);
+  box-shadow:var(--sh-lg);z-index:9999;
+  display:flex;align-items:center;gap:12px;
+  font-size:13px;font-weight:700;
+  transition:transform .38s cubic-bezier(.34,1.56,.64,1);
+  white-space:nowrap;max-width:calc(100vw - 32px);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast-icon{width:32px;height:32px;background:rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.toast-icon svg{width:15px;height:15px}
+.toast-sub{font-size:11px;font-weight:400;opacity:.75;margin-top:1px}
+
+/* ═══════════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════════ */
+#app{display:none;min-height:100vh;min-height:100dvh;background:var(--surface);padding-bottom:calc(var(--nav-h) + var(--safe-bot))}
+
+/* TOP BAR */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;
+  height:calc(var(--top-h) + var(--safe-top));
+  padding-top:var(--safe-top);
+  background:var(--ink);
+  display:flex;align-items:center;
+  padding-left:16px;padding-right:16px;
+  z-index:200;
+  box-shadow:0 2px 16px rgba(11,30,53,.25);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.top-bar::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--aqua2),var(--aqua),var(--teal),var(--sky),var(--aqua2));
+  background-size:300% 100%;animation:gradShift 7s ease infinite
+}
+.top-bar-logo{width:32px;height:32px;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(14,165,233,.4))}
+.top-bar-logo svg{width:32px;height:32px;display:block}
+.top-bar-title{flex:1;padding:0 10px}
+.top-bar-title .t1{font-family:var(--f-head);font-size:14px;font-weight:700;color:#fff;line-height:1.2}
+.top-bar-title .t2{font-size:10px;color:rgba(255,255,255,.4);font-weight:500;margin-top:1px}
+.top-bar-right{display:flex;align-items:center;gap:8px}
+.top-bar-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--aqua2),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:900;color:#fff;flex-shrink:0;cursor:pointer
+}
+.top-bar-menu-btn{
+  width:36px;height:36px;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);border-radius:var(--r-sm);
+  color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;touch-action:manipulation
+}
+.top-bar-menu-btn svg{width:18px;height:18px}
+.top-bar-menu-btn:active{background:rgba(255,255,255,.15)}
+
+/* MAIN SCROLL AREA */
+.app-content{
+  margin-top:calc(var(--top-h) + var(--safe-top));
+  min-height:calc(100vh - var(--top-h) - var(--safe-top) - var(--nav-h) - var(--safe-bot));
+  padding:0;overflow-x:hidden
+}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  height:calc(var(--nav-h) + var(--safe-bot));
+  padding-bottom:var(--safe-bot);
+  background:#fff;border-top:1px solid var(--border);
+  display:flex;align-items:stretch;
+  z-index:200;box-shadow:0 -4px 20px rgba(11,30,53,.08)
+}
+.nav-tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;transition:all .18s;touch-action:manipulation;
+  color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.02em;
+  border:none;background:none;padding:0;position:relative
+}
+.nav-tab svg{width:20px;height:20px;transition:all .18s}
+.nav-tab.active{color:var(--aqua2)}
+.nav-tab.active svg{color:var(--aqua);transform:translateY(-1px)}
+.nav-tab::after{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:0;height:2px;background:linear-gradient(90deg,var(--aqua2),var(--teal));
+  border-radius:0 0 2px 2px;transition:width .2s
+}
+.nav-tab.active::after{width:40px}
+.nav-badge{
+  position:absolute;top:6px;right:calc(50% - 16px);
+  background:var(--danger);color:#fff;
+  font-size:9px;font-weight:900;
+  min-width:16px;height:16px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;border:2px solid #fff
+}
+
+/* ═══════════════════════════════════════════════
+   SIDE DRAWER (Admin + More)
+═══════════════════════════════════════════════ */
+.drawer-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(11,30,53,.5);backdrop-filter:blur(4px);z-index:300
+}
+.drawer-overlay.open{display:block}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);
+  background:#fff;z-index:310;
+  transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  box-shadow:-8px 0 40px rgba(11,30,53,.15)
+}
+.drawer.open{transform:translateX(0)}
+
+.drawer-top{
+  background:linear-gradient(135deg,var(--ink),var(--ink2));
+  padding:calc(var(--safe-top) + 20px) 20px 20px;
+  position:relative;overflow:hidden
+}
+.drawer-top::after{
+  content:'';position:absolute;right:-20px;bottom:-20px;
+  width:100px;height:100px;border-radius:50%;background:rgba(14,165,233,.1)
+}
+.drawer-top-user{display:flex;align-items:center;gap:12px;position:relative;z-index:2}
+.drawer-avatar{
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--aqua2),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;color:#fff;flex-shrink:0
+}
+.drawer-user-name{font-family:var(--f-head);font-size:16px;font-weight:700;color:#fff}
+.drawer-user-role{margin-top:2px}
+.role-pill{
+  display:inline-flex;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em
+}
+.role-admin{background:rgba(14,165,233,.25);color:#38bdf8;border:1px solid rgba(14,165,233,.35)}
+.role-viewer{background:rgba(5,150,105,.2);color:#34d399;border:1px solid rgba(5,150,105,.3)}
+
+.drawer-close{
+  position:absolute;top:calc(var(--safe-top)+14px);right:14px;
+  width:30px;height:30px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:3;touch-action:manipulation
+}
+.drawer-close svg{width:14px;height:14px}
+
+.drawer-body{flex:1;overflow-y:auto;padding:12px}
+.drawer-section{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:12px 10px 4px}
+.drawer-item{
+  display:flex;align-items:center;gap:11px;
+  padding:12px 12px;border-radius:var(--r-sm);cursor:pointer;
+  transition:all .15s;font-size:14px;font-weight:600;color:var(--mid);
+  margin-bottom:2px;touch-action:manipulation
+}
+.drawer-item svg{width:18px;height:18px;flex-shrink:0;transition:all .15s}
+.drawer-item:active{background:var(--ghost)}
+.drawer-item.active{background:linear-gradient(135deg,rgba(14,165,233,.1),rgba(13,148,136,.06));color:var(--aqua2);border:1px solid rgba(14,165,233,.15)}
+.drawer-item.active svg{color:var(--aqua)}
+
+.drawer-footer{padding:16px;border-top:1px solid var(--border2)}
+.drawer-logout{
+  width:100%;padding:13px;
+  background:rgba(220,38,38,.07);color:var(--danger);
+  border:1.5px solid rgba(220,38,38,.2);border-radius:var(--r-sm);
+  font-size:14px;font-weight:800;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  touch-action:manipulation;transition:all .2s
+}
+.drawer-logout svg{width:16px;height:16px}
+.drawer-logout:active{background:var(--danger);color:#fff}
+
+/* ═══════════════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════════════ */
+.section{display:none;animation:fadeUp .25s ease both}
+.section.active{display:block}
+
+/* Page header */
+.page-head{
+  padding:20px 16px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap
+}
+.page-eyebrow{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--aqua);margin-bottom:3px}
+.page-title{font-family:var(--f-head);font-size:22px;font-weight:700;color:var(--ink)}
+.page-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════════ */
+.dash-hero{
+  margin:16px;border-radius:var(--r-lg);
+  background:linear-gradient(135deg,var(--ink) 0%,var(--ink2) 55%,#0d4e80 100%);
+  padding:22px;position:relative;overflow:hidden;
+  box-shadow:var(--sh-lg)
+}
+.dash-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 65% 110% at 80% 50%,rgba(14,165,233,.18) 0%,transparent 60%);
+  pointer-events:none
+}
+.dash-hero-waves{position:absolute;bottom:0;left:0;right:0;height:55px;overflow:hidden}
+.dash-hw{position:absolute;bottom:0;width:200%;height:100%}
+.dash-hw svg{width:100%;height:100%}
+.dhw1{animation:waveScroll 9s linear infinite;opacity:.22}
+.dhw2{animation:waveScroll 15s linear infinite reverse;opacity:.14;bottom:-6px}
+.dash-hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;
+  color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px
+}
+.dash-hero-badge .dot{width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse 2s ease infinite}
+.dash-hero-title{font-family:var(--f-head);font-size:20px;font-weight:700;color:#fff;margin-bottom:5px}
+.dash-hero-sub{font-size:12px;color:rgba(255,255,255,.5)}
+.dash-kpis{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;position:relative;z-index:2;padding-bottom:32px}
+.dash-kpi{
+  background:rgba(255,255,255,.1);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.14);border-radius:var(--r-sm);
+  padding:10px 14px;text-align:center;flex:1;min-width:60px
+}
+.dash-kpi .kn{font-family:var(--f-head);font-size:22px;font-weight:700;color:#fff;line-height:1}
+.dash-kpi .kl{font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-top:3px;font-weight:700}
+
+/* Stats row */
+.stats-scroll{display:flex;gap:10px;padding:14px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.stats-scroll::-webkit-scrollbar{display:none}
+.stat-chip{
+  flex-shrink:0;background:#fff;border-radius:var(--r);border:1px solid var(--border);
+  box-shadow:var(--sh-sm);padding:14px 16px;min-width:108px;
+  transition:transform .18s;position:relative;overflow:hidden
+}
+.stat-chip::before{content:'';position:absolute;top:-8px;right:-8px;width:50px;height:50px;border-radius:50%;background:var(--chip-bg,rgba(14,165,233,.07))}
+.stat-chip:active{transform:scale(.96)}
+.stat-chip-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.stat-chip-icon svg{width:15px;height:15px}
+.stat-chip-num{font-family:var(--f-head);font-size:26px;font-weight:700;color:var(--ink);line-height:1}
+.stat-chip-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+
+/* Section card title */
+.section-title-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 16px 10px;gap:12px
+}
+.section-title-row .sec-title{font-family:var(--f-head);font-size:15px;font-weight:700;color:var(--ink)}
+
+/* Card */
+.card{background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh-sm);margin:0 16px 14px;overflow:hidden}
+.card-body{padding:16px}
+.card-head{padding:14px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card-head-title{font-family:var(--f-head);font-size:13px;font-weight:700;color:var(--ink)}
+
+/* ═══════════════════════════════════════════════
+   QUERY MINI ITEMS (dashboard)
+═══════════════════════════════════════════════ */
+.q-mini{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border2);transition:background .15s}
+.q-mini:last-child{border-bottom:none}
+.q-mini:active{background:var(--ghost)}
+.q-mini-dot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.q-mini-text{font-size:12.5px;color:var(--ink2);line-height:1.5}
+.q-mini-meta{font-size:10.5px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+
+/* Stage mini summary */
+.stage-mini{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border2)}
+.stage-mini:last-child{border-bottom:none}
+.stage-mini:active{background:var(--ghost)}
+.stage-mini-name{font-size:13px;font-weight:700;color:var(--ink)}
+.stage-mini-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.stage-mini-pills{display:flex;gap:5px;align-items:center;flex-shrink:0}
+
+/* ═══════════════════════════════════════════════
+   BADGES
+═══════════════════════════════════════════════ */
+.badge{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;display:inline-flex;align-items:center;gap:4px;flex-shrink:0}
+.badge-dot{width:4px;height:4px;border-radius:50%}
+.badge-running{background:rgba(5,150,105,.1);color:var(--success)}.badge-running .badge-dot{background:var(--success)}
+.badge-stopped{background:rgba(220,38,38,.1);color:var(--danger)}.badge-stopped .badge-dot{background:var(--danger)}
+.badge-repair{background:rgba(217,119,6,.1);color:var(--warning)}.badge-repair .badge-dot{background:var(--warning)}
+.badge-breakdown{background:rgba(220,38,38,.15);color:#b91c1c}.badge-breakdown .badge-dot{background:#b91c1c}
+.badge-standby{background:rgba(124,58,237,.1);color:var(--standby)}.badge-standby .badge-dot{background:var(--standby)}
+.badge-pending{background:rgba(217,119,6,.1);color:var(--warning)}
+.badge-reviewed{background:rgba(14,165,233,.1);color:var(--aqua2)}
+.badge-resolved{background:rgba(5,150,105,.1);color:var(--success)}
+
+/* ═══════════════════════════════════════════════
+   PUMP CARDS
+═══════════════════════════════════════════════ */
+.pumps-list{padding:0 16px 8px;display:flex;flex-direction:column;gap:10px}
+.pump-card{
+  background:#fff;border-radius:var(--r);border:1px solid var(--border);
+  box-shadow:var(--sh-sm);overflow:hidden;cursor:pointer;
+  transition:all .2s;touch-action:manipulation
+}
+.pump-card:active{transform:scale(.98);box-shadow:none}
+.pump-card-accent{height:3px}
+.ac-running{background:linear-gradient(90deg,var(--success),#34d399)}
+.ac-stopped{background:linear-gradient(90deg,var(--danger),#f87171)}
+.ac-repair{background:linear-gradient(90deg,var(--warning),#fbbf24)}
+.ac-breakdown{background:linear-gradient(90deg,#b91c1c,var(--danger))}
+.ac-standby{background:linear-gradient(90deg,var(--standby),#a78bfa)}
+.pump-card-inner{padding:14px}
+.pump-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
+.pump-name{font-family:var(--f-head);font-size:15px;font-weight:700;color:var(--ink)}
+.pump-model{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);margin-top:2px}
+.pump-info-row{display:flex;gap:12px;flex-wrap:wrap}
+.pump-info-item .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin-bottom:1px}
+.pump-info-item .val{font-size:12px;font-weight:600;color:var(--ink2)}
+.pump-card-actions{display:flex;gap:6px;padding:10px 14px;border-top:1px solid var(--border2);background:var(--ghost)}
+
+/* ═══════════════════════════════════════════════
+   STAGE BLOCKS
+═══════════════════════════════════════════════ */
+.stage-block{margin:0 16px 16px;border-radius:var(--r-lg);background:#fff;border:1px solid var(--border);box-shadow:var(--sh-sm);overflow:hidden}
+.stage-block-head{
+  background:linear-gradient(135deg,var(--ink),var(--ink2));
+  padding:16px 18px;display:flex;align-items:center;justify-content:space-between;
+  position:relative;overflow:hidden
+}
+.stage-block-head::after{content:'';position:absolute;right:-16px;top:-16px;width:80px;height:80px;border-radius:50%;background:rgba(14,165,233,.1)}
+.stage-num{font-size:10px;font-weight:700;color:rgba(56,189,248,.8);text-transform:uppercase;letter-spacing:.12em;margin-bottom:3px}
+.stage-name{font-family:var(--f-head);font-size:16px;font-weight:700;color:#fff}
+.stage-desc{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.stage-head-actions{display:flex;gap:6px;position:relative;z-index:2}
+.stage-action-btn{
+  padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:none;
+  font-family:var(--f-body);transition:all .15s;touch-action:manipulation
+}
+.sab-add{background:rgba(56,189,248,.2);color:#38bdf8;border:1px solid rgba(56,189,248,.25)}
+.sab-edit{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.12)}
+.sab-del{background:rgba(220,38,38,.15);color:#fca5a5;border:1px solid rgba(220,38,38,.25)}
+.stage-block-content{padding:12px}
+
+/* ═══════════════════════════════════════════════
+   SEARCH BAR
+═══════════════════════════════════════════════ */
+.search-bar{padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:150px}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);pointer-events:none}
+.search-input{
+  width:100%;padding:11px 11px 11px 34px;
+  border:1.5px solid var(--border);border-radius:var(--r-sm);
+  font-size:14px;color:var(--ink);background:#fff;outline:none;
+  transition:all .2s;-webkit-appearance:none
+}
+.search-input:focus{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+.filter-sel{
+  padding:11px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);
+  font-size:13px;color:var(--ink2);background:#fff;outline:none;
+  -webkit-appearance:none;cursor:pointer;max-width:130px
+}
+.filter-sel:focus{border-color:var(--aqua)}
+
+/* ═══════════════════════════════════════════════
+   NOTICE BANNER
+═══════════════════════════════════════════════ */
+.notice-banner{
+  margin:0 16px 12px;background:linear-gradient(90deg,rgba(14,165,233,.07),rgba(13,148,136,.05));
+  border:1px solid rgba(14,165,233,.2);border-radius:var(--r-sm);
+  padding:12px 14px;font-size:12.5px;color:var(--aqua2);
+  display:flex;align-items:flex-start;gap:8px;font-weight:600
+}
+.notice-banner svg{width:15px;height:15px;flex-shrink:0;margin-top:1px}
+
+/* ═══════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;padding:10px 16px;
+  border-radius:var(--r-sm);font-size:13px;font-weight:700;border:none;cursor:pointer;
+  transition:all .18s;touch-action:manipulation;-webkit-appearance:none;white-space:nowrap
+}
+.btn svg{width:13px;height:13px;flex-shrink:0}
+.btn-primary{background:linear-gradient(135deg,var(--aqua2),var(--aqua));color:#fff;box-shadow:0 2px 10px rgba(14,165,233,.3)}
+.btn-primary:active{transform:scale(.96);box-shadow:none}
+.btn-secondary{background:var(--ghost);color:var(--ink2);border:1.5px solid var(--border)}
+.btn-secondary:active{background:var(--pale)}
+.btn-danger{background:rgba(220,38,38,.1);color:var(--danger);border:1.5px solid rgba(220,38,38,.2)}
+.btn-danger:active{background:var(--danger);color:#fff}
+.btn-success{background:rgba(5,150,105,.1);color:var(--success);border:1.5px solid rgba(5,150,105,.2)}
+.btn-xs{padding:6px 12px;font-size:11px;border-radius:var(--r-xs)}
+.btn-xs svg{width:11px;height:11px}
+.btn-sm{padding:8px 14px;font-size:12px}
+.btn-ghost-primary{background:rgba(14,165,233,.08);color:var(--aqua2);border:1px solid rgba(14,165,233,.2)}
+.btn-full{width:100%;justify-content:center}
+
+/* FAB */
+.fab{
+  position:fixed;right:18px;bottom:calc(var(--nav-h) + var(--safe-bot) + 14px);
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--aqua2),var(--aqua));
+  box-shadow:0 4px 20px rgba(14,165,233,.45);
+  color:#fff;border:none;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  z-index:100;transition:all .2s;touch-action:manipulation
+}
+.fab svg{width:22px;height:22px}
+.fab:active{transform:scale(.92)}
+.fab.show{display:flex}
+
+/* ═══════════════════════════════════════════════
+   DETAIL BOTTOM SHEET
+═══════════════════════════════════════════════ */
+.sheet-overlay{display:none;position:fixed;inset:0;background:rgba(11,30,53,.45);backdrop-filter:blur(4px);z-index:350}
+.sheet-overlay.open{display:block}
+.bottom-sheet{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;border-radius:var(--r-xl) var(--r-xl) 0 0;
+  max-height:92vh;overflow-y:auto;z-index:360;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  padding-bottom:calc(var(--safe-bot) + 16px)
+}
+.bottom-sheet.open{transform:translateY(0)}
+.sheet-handle{width:40px;height:4px;background:var(--pale);border-radius:2px;margin:12px auto 0}
+.sheet-head{
+  padding:18px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  border-bottom:1px solid var(--border2);position:sticky;top:0;background:#fff;z-index:2
+}
+.sheet-title{font-family:var(--f-head);font-size:17px;font-weight:700;color:var(--ink)}
+.sheet-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.sheet-close{
+  width:30px;height:30px;background:var(--ghost);border:none;border-radius:8px;
+  color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0
+}
+.sheet-close svg{width:14px;height:14px}
+.sheet-body{padding:18px 20px}
+.sheet-section{margin-bottom:20px}
+.sheet-section-title{
+  font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);
+  margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;gap:7px
+}
+.sheet-section-title::before{content:'';width:3px;height:11px;background:linear-gradient(180deg,var(--aqua),var(--teal));border-radius:2px}
+.sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sheet-item .lbl{font-size:10px;color:var(--muted);font-weight:700;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
+.sheet-item .val{font-size:13px;color:var(--ink);font-weight:500;line-height:1.5}
+.sheet-item.full{grid-column:1/-1}
+
+/* ═══════════════════════════════════════════════
+   MODALS (for forms)
+═══════════════════════════════════════════════ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(11,30,53,.55);backdrop-filter:blur(6px);
+  z-index:400;align-items:flex-end;justify-content:center;padding:0
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:#fff;border-radius:var(--r-xl) var(--r-xl) 0 0;
+  width:100%;max-height:92vh;overflow-y:auto;
+  animation:slideUp .28s ease;
+  padding-bottom:calc(var(--safe-bot) + 16px)
+}
+.modal-handle{width:40px;height:4px;background:var(--pale);border-radius:2px;margin:12px auto 0}
+.modal-head{
+  padding:16px 20px;border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;background:#fff;z-index:2
+}
+.modal-title{font-family:var(--f-head);font-size:16px;font-weight:700;color:var(--ink)}
+.modal-close{
+  width:30px;height:30px;background:var(--ghost);border:none;border-radius:8px;
+  color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer
+}
+.modal-close svg{width:14px;height:14px}
+.modal-body{padding:18px 20px}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border2);display:flex;gap:10px;justify-content:flex-end}
+
+/* ═══════════════════════════════════════════════
+   FORMS
+═══════════════════════════════════════════════ */
+.form-group{margin-bottom:15px}
+.form-group label{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--mid);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:12px 13px;
+  border:1.5px solid var(--border);border-radius:var(--r-sm);
+  font-size:14px;color:var(--ink);background:#fff;outline:none;
+  transition:all .2s;-webkit-appearance:none;font-family:var(--f-body)
+}
+.form-group textarea{resize:vertical;min-height:76px}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ═══════════════════════════════════════════════
+   ALERTS
+═══════════════════════════════════════════════ */
+.alert{padding:11px 14px;border-radius:var(--r-sm);font-size:12.5px;margin-bottom:14px;display:flex;gap:9px;align-items:flex-start;font-weight:600}
+.alert svg{width:15px;height:15px;flex-shrink:0;margin-top:1px}
+.alert-info{background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.2);color:var(--aqua2)}
+.alert-danger{background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);color:var(--danger)}
+.alert-success{background:rgba(5,150,105,.07);border:1px solid rgba(5,150,105,.2);color:var(--success)}
+.alert-warning{background:rgba(217,119,6,.07);border:1px solid rgba(217,119,6,.2);color:var(--warning)}
+
+/* ═══════════════════════════════════════════════
+   QUERY ITEMS
+═══════════════════════════════════════════════ */
+.query-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--sh-sm)}
+.qc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;gap:8px}
+.qc-id{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.qc-text{font-size:13px;color:var(--ink2);line-height:1.55}
+.qc-meta{font-size:11px;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.qc-admin-note{margin-top:10px;padding:9px 12px;background:rgba(14,165,233,.06);border:1px solid rgba(14,165,233,.15);border-radius:8px;font-size:12px;color:var(--aqua2)}
+
+/* Query table replacement — card list for mobile */
+.query-admin-item{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--sh-sm)}
+.qai-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.qai-id{font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.qai-info{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;font-size:11px;color:var(--mid)}
+.qai-text{font-size:12.5px;color:var(--ink2);line-height:1.55;margin-bottom:8px}
+.qai-actions{display:flex;gap:8px;margin-top:6px}
+.qai-admin-note{margin-top:8px;padding:8px 10px;background:rgba(14,165,233,.06);border:1px solid rgba(14,165,233,.15);border-radius:8px;font-size:11.5px;color:var(--aqua2)}
+
+/* ═══════════════════════════════════════════════
+   HISTORY LOG ITEMS
+═══════════════════════════════════════════════ */
+.log-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border2);align-items:flex-start}
+.log-item:last-child{border-bottom:none}
+.log-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.log-icon svg{width:14px;height:14px}
+.log-content{flex:1;min-width:0}
+.log-type-pill{display:inline-flex;padding:2px 8px;border-radius:20px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.log-desc{font-size:12.5px;color:var(--ink2);line-height:1.55}
+.log-staff{font-size:11px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:4px}
+.log-date{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);white-space:nowrap;flex-shrink:0;margin-top:2px}
+.log-actions{display:flex;gap:6px;margin-top:6px}
+
+/* ═══════════════════════════════════════════════
+   CONTACT CARDS
+═══════════════════════════════════════════════ */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 8px}
+.contact-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+.contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,var(--aqua2),var(--teal))}
+.cc-label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:4px}
+.cc-value{font-size:13.5px;font-weight:700;color:var(--ink)}
+.cc-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ═══════════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════════ */
+.empty-state{text-align:center;padding:36px 20px;color:var(--muted)}
+.empty-icon{width:52px;height:52px;background:var(--ghost);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.empty-icon svg{width:24px;height:24px;color:var(--pale)}
+.empty-state h3{font-size:14px;font-weight:700;color:var(--mid);margin-bottom:5px}
+.empty-state p{font-size:12.5px}
+
+/* ═══════════════════════════════════════════════
+   CONFIRM SHEET
+═══════════════════════════════════════════════ */
+.confirm-sheet{
+  position:fixed;bottom:0;left:0;right:0;background:#fff;
+  border-radius:var(--r-xl) var(--r-xl) 0 0;padding:24px 20px calc(var(--safe-bot)+20px);
+  z-index:500;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 -8px 40px rgba(11,30,53,.14)
+}
+.confirm-sheet.open{transform:translateY(0)}
+.confirm-sheet h3{font-family:var(--f-head);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.confirm-sheet p{font-size:13.5px;color:var(--ink2);line-height:1.6;margin-bottom:20px}
+.confirm-sheet-btns{display:flex;gap:10px}
+.confirm-sheet-btns .btn{flex:1;justify-content:center}
+
+/* ═══════════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════════ */
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border2)}
+.settings-row:last-child{border-bottom:none}
+.settings-row-label{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:1px}
+.settings-row-sub{font-size:11px;color:var(--muted)}
+
+/* Mono text */
+.mono{font-family:var(--f-mono);font-size:11.5px}
+
+/* Spacer */
+.spacer-16{height:16px}
+.spacer-24{height:24px}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE TWEAKS
+═══════════════════════════════════════════════ */
+@media(min-width:480px){
+  .contact-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  .pumps-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 8px}
+  .pumps-list .pump-card{margin:0}
+}
+@media(min-width:640px){
+  .pumps-list{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+}
+@media(max-width:340px){
+  .form-row{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     LOGIN PAGE
+═══════════════════════════════════════════════ -->
+<div id="login-page">
+  <div class="login-top-bar">
+    <span>Gumma Pumping Station</span><span class="dot"></span>
+    <span>Management System</span>
+  </div>
+
+  <div class="login-body">
+    <!-- Logo + title -->
+    <div class="login-logo-wrap">
+      <div class="login-emblem">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="lgDrop" x1="50" y1="30" x2="50" y2="72" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#7dd3fc"/><stop offset="45%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0d9488"/>
+            </linearGradient>
+            <radialGradient id="lgPool" cx="50%" cy="38%" r="55%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity=".55"/><stop offset="100%" stop-color="#0077b6" stop-opacity=".08"/>
+            </radialGradient>
+            <filter id="lgGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="1.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Decorative rings -->
+          <circle cx="50" cy="50" r="48" fill="rgba(14,165,233,.06)"/>
+          <circle cx="50" cy="50" r="43" fill="none" stroke="rgba(56,189,248,.2)" stroke-width="1"/>
+          <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(56,189,248,.1)" stroke-width="1" stroke-dasharray="4 4"/>
+          <!-- Pool -->
+          <ellipse cx="50" cy="70" rx="24" ry="6" fill="url(#lgPool)" class="lg-surf"/>
+          <ellipse cx="50" cy="70" rx="24" ry="6" fill="none" stroke="rgba(56,189,248,.38)" stroke-width="1"/>
+          <!-- Ripples -->
+          <ellipse class="lg-r1" cx="50" cy="70" rx="15" ry="6" fill="none" stroke="#38bdf8" stroke-width="1.2"/>
+          <ellipse class="lg-r2" cx="50" cy="70" rx="22" ry="9" fill="none" stroke="#0ea5e9" stroke-width=".9"/>
+          <ellipse class="lg-r3" cx="50" cy="70" rx="30" ry="12" fill="none" stroke="#0d9488" stroke-width=".7"/>
+          <!-- Drop -->
+          <g class="lg-drop-g" filter="url(#lgGlow)">
+            <path d="M50,32 C50,32 38,46 38,56 C38,63 43.5,70.5 50,70.5 C56.5,70.5 62,63 62,56 C62,46 50,32 50,32 Z" fill="url(#lgDrop)"/>
+            <ellipse class="lg-shine" cx="44.5" cy="50" rx="3.2" ry="6" fill="rgba(255,255,255,.3)" transform="rotate(-18,44.5,50)"/>
+            <ellipse cx="50" cy="36" rx="1.4" ry="2.2" fill="rgba(255,255,255,.2)"/>
+          </g>
+        </svg>
+      </div>
+      <div class="login-title-block">
+        <div class="org">Pump Operations &amp; Management</div>
+        <div class="name">Gumma Pumping Station</div>
+      </div>
+      <!-- Tagline -->
+      <div class="login-tagline-row">
+        <span class="tagline-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          3 Stages
+        </span>
+        <span class="tagline-sep">|</span>
+        <span class="tagline-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 8V4M12 20v-4M8 12H4M20 12h-4"/></svg>
+          12 Pumps
+        </span>
+        <span class="tagline-sep">|</span>
+        <span class="tagline-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          24/7 Monitoring
+        </span>
+      </div>
+    </div>
+
+    <!-- Login card -->
+    <div class="login-card">
+      <div class="login-card-head">
+        <div class="login-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="login-card-head-text">
+          <h2>Secure Portal Access</h2>
+          <p>Authorised Personnel Only</p>
+        </div>
+      </div>
+      <div class="login-card-body">
+        <div id="login-error" class="login-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Invalid username or password.
+        </div>
+        <div class="login-field">
+          <label>Username</label>
+          <div class="field-wrap">
+            <svg class="field-left-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="text" id="login-u" placeholder="Enter username" autocomplete="username" autocorrect="off" autocapitalize="none">
+          </div>
+        </div>
+        <div class="login-field">
+          <label>Password</label>
+          <div class="field-wrap has-toggle">
+            <svg class="field-left-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="login-p" placeholder="Enter password" autocomplete="current-password">
+            <button class="toggle-eye" type="button" onclick="togglePwd()" id="eye-btn" aria-label="Toggle password visibility">
+              <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <button class="login-btn" onclick="doLogin()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Sign In to Portal
+        </button>
+        <p class="login-hint">This system is for authorised personnel only. Unauthorised access is strictly prohibited.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wave animation -->
+  <div class="login-waves">
+    <div class="lw lw1"><svg viewBox="0 0 1440 160" preserveAspectRatio="none"><path d="M0,80C180,130 360,20 540,80C720,140 900,20 1080,80C1260,140 1360,60 1440,80L1440,160L0,160Z" fill="rgba(14,165,233,.32)"/></svg></div>
+    <div class="lw lw2"><svg viewBox="0 0 1440 160" preserveAspectRatio="none"><path d="M0,100C200,50 400,150 600,100C800,50 1000,150 1200,100C1320,70 1380,115 1440,100L1440,160L0,160Z" fill="rgba(13,148,136,.22)"/></svg></div>
+    <div class="lw lw3"><svg viewBox="0 0 1440 160" preserveAspectRatio="none"><path d="M0,115C240,80 480,150 720,115C960,80 1200,150 1440,115L1440,160L0,160Z" fill="rgba(56,189,248,.14)"/></svg></div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast">
+  <div class="toast-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+  <div>
+    <div id="toast-msg">Welcome!</div>
+    <div class="toast-sub" id="toast-sub">Signed in</div>
+  </div>
+</div>
+
+<!-- Install Banner -->
+<div class="install-banner" id="install-banner">
+  <div class="install-banner-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0C19 10 12 2 12 2z"/></svg>
+  </div>
+  <div class="install-banner-text">
+    <strong>Install App</strong>
+    <span>Add to home screen for best experience</span>
+  </div>
+  <button class="install-btn" id="install-btn">Install</button>
+  <button class="install-dismiss" onclick="document.getElementById('install-banner').classList.remove('show')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div class="top-bar-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hdDrop" x1="20" y1="10" x2="20" y2="30" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#7dd3fc"/><stop offset="45%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0d9488"/>
+          </linearGradient>
+          <radialGradient id="hdPool" cx="50%" cy="38%" r="55%">
+            <stop offset="0%" stop-color="#38bdf8" stop-opacity=".55"/><stop offset="100%" stop-color="#0077b6" stop-opacity=".06"/>
+          </radialGradient>
+          <filter id="hdGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="1" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <rect width="40" height="40" rx="10" fill="rgba(14,165,233,.13)"/>
+        <ellipse cx="20" cy="29.5" rx="10" ry="2.8" fill="url(#hdPool)" class="hd-surf"/>
+        <ellipse cx="20" cy="29.5" rx="10" ry="2.8" fill="none" stroke="rgba(56,189,248,.38)" stroke-width=".7"/>
+        <ellipse class="hd-r1" cx="20" cy="29.5" rx="7" ry="3" fill="none" stroke="#38bdf8" stroke-width=".9"/>
+        <ellipse class="hd-r2" cx="20" cy="29.5" rx="10" ry="4.5" fill="none" stroke="#0ea5e9" stroke-width=".7"/>
+        <ellipse class="hd-r3" cx="20" cy="29.5" rx="13" ry="6" fill="none" stroke="#0d9488" stroke-width=".55"/>
+        <g class="hd-drop" filter="url(#hdGlow)">
+          <path d="M20,16C20,16 14,22 14,25.5C14,28.6 16.7,31 20,31C23.3,31 26,28.6 26,25.5C26,22 20,16 20,16Z" fill="url(#hdDrop)"/>
+          <ellipse cx="17.6" cy="21.5" rx="1.4" ry="2.6" fill="rgba(255,255,255,.3)" transform="rotate(-18,17.6,21.5)"/>
+        </g>
+      </svg>
+    </div>
+    <div class="top-bar-title">
+      <div class="t1">Gumma Station</div>
+      <div class="t2" id="tb-sub">Management System</div>
+    </div>
+    <div class="top-bar-right">
+      <div class="top-bar-avatar" id="tb-avatar" onclick="openDrawer()"></div>
+      <button class="top-bar-menu-btn" onclick="openDrawer()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="app-content">
+
+    <!-- ── DASHBOARD ── -->
+    <section id="sec-dashboard" class="section active">
+      <div class="dash-hero">
+        <div class="dash-hero-waves">
+          <div class="dash-hw dhw1"><svg viewBox="0 0 1440 55" preserveAspectRatio="none"><path d="M0,28C240,50 480,5 720,28C960,50 1200,5 1440,28L1440,55L0,55Z" fill="rgba(14,165,233,.4)"/></svg></div>
+          <div class="dash-hw dhw2"><svg viewBox="0 0 1440 55" preserveAspectRatio="none"><path d="M0,38C180,18 360,52 540,38C720,24 900,52 1080,38C1260,24 1360,44 1440,38L1440,55L0,55Z" fill="rgba(13,148,136,.28)"/></svg></div>
+        </div>
+        <div class="dash-hero-badge"><div class="dot"></div>System Online</div>
+        <div class="dash-hero-title" id="dash-title">Gumma Pumping Station</div>
+        <div class="dash-hero-sub" id="dash-sub">Operational Management Dashboard</div>
+        <div class="dash-kpis" id="dash-kpis"></div>
+        <div class="admin-only" style="position:absolute;top:14px;right:14px;z-index:3">
+          <button class="btn btn-sm" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15);font-size:11px" onclick="openModal('modal-dash-edit')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+            Edit
+          </button>
+        </div>
+      </div>
+      <div id="dash-notice"></div>
+      <div class="stats-scroll" id="stats-scroll"></div>
+      <div class="section-title-row">
+        <span class="sec-title">Recent Queries</span>
+        <button class="btn btn-ghost-primary btn-xs admin-only" onclick="showSection('adminqueries')">View All</button>
+      </div>
+      <div class="card">
+        <div id="dash-queries"></div>
+      </div>
+      <div class="section-title-row"><span class="sec-title">Stage Summary</span></div>
+      <div class="card">
+        <div id="dash-stages"></div>
+      </div>
+      <div class="spacer-24"></div>
+    </section>
+
+    <!-- ── STAGES ── -->
+    <section id="sec-stages" class="section">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">Operations</div>
+          <div class="page-title">Stages</div>
+        </div>
+      </div>
+      <div class="spacer-16"></div>
+      <div id="stages-container"></div>
+      <div class="spacer-24"></div>
+    </section>
+
+    <!-- ── ALL PUMPS ── -->
+    <section id="sec-pumps" class="section">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">Inventory</div>
+          <div class="page-title">All Pumps</div>
+        </div>
+      </div>
+      <div class="search-bar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" id="pump-search" placeholder="Search pumps…" oninput="renderPumps()">
+        </div>
+        <select class="filter-sel" id="pump-filter-status" onchange="renderPumps()">
+          <option value="">All Status</option>
+          <option>Running</option><option>Stopped</option><option>Under Repair</option><option>Breakdown</option><option>Standby</option>
+        </select>
+        <select class="filter-sel" id="pump-filter-stage" onchange="renderPumps()">
+          <option value="">All Stages</option>
+        </select>
+      </div>
+      <div class="pumps-list" id="pumps-list"></div>
+      <div class="spacer-24"></div>
+    </section>
+
+    <!-- ── SUBMIT QUERY ── -->
+    <section id="sec-viewerquery" class="section">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">Field Operations</div>
+          <div class="page-title">Submit Query</div>
+        </div>
+      </div>
+      <div class="spacer-16"></div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-title">New Query / Remark</span></div>
+        <div class="card-body">
+          <div id="q-success" class="alert alert-success" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Query submitted successfully. Admin has been notified.
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Stage</label>
+              <select id="q-stage" onchange="populateQueryPumps()" style="width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;outline:none;background:#fff;color:var(--ink);-webkit-appearance:none;font-family:var(--f-body)">
+                <option value="">— Select Stage —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Pump</label>
+              <select id="q-pump" style="width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;outline:none;background:#fff;color:var(--ink);-webkit-appearance:none;font-family:var(--f-body)">
+                <option value="">— Select Pump —</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Your Name (Optional)</label><input type="text" id="q-name" placeholder="Enter your name"></div>
+          <div class="form-group"><label>Query / Remark</label><textarea id="q-text" placeholder="Describe issue or observation…" style="min-height:110px"></textarea></div>
+          <button class="btn btn-primary btn-full" onclick="submitQuery()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Submit Query
+          </button>
+        </div>
+      </div>
+      <div class="section-title-row"><span class="sec-title">My Previous Queries</span></div>
+      <div style="padding:0 16px" id="viewer-history"></div>
+      <div class="spacer-24"></div>
+    </section>
+
+    <!-- ── ADMIN QUERIES ── -->
+    <section id="sec-adminqueries" class="section">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">Administration</div>
+          <div class="page-title">Query Management</div>
+        </div>
+      </div>
+      <div class="search-bar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" id="qmgmt-search" placeholder="Search queries…" oninput="renderAdminQueries()">
+        </div>
+        <select class="filter-sel" id="qmgmt-status" onchange="renderAdminQueries()">
+          <option value="">All</option>
+          <option>Pending</option><option>Reviewed</option><option>Resolved</option>
+        </select>
+      </div>
+      <div style="padding:0 16px" id="admin-queries-list"></div>
+      <div class="spacer-24"></div>
+    </section>
+
+    <!-- ── HISTORY ── -->
+    <section id="sec-history" class="section">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">Records</div>
+          <div class="page-title">History</div>
+        </div>
+      </div>
+      <div class="search-bar">
+        <select class="filter-sel" id="log-filter" onchange="renderHistory()" style="max-width:none;flex:1">
+          <option value="">All Types</option>
+          <option>Maintenance</option><option>Repair</option><option>Breakdown</option>
+          <option>Status Update</option><option>Inspection</option><option>Other</option>
+        </select>
+      </div>
+      <div class="card">
+        <div class="card-body" id="history-list"></div>
+      </div>
+      <div class="spacer-24"></div>
+    </section>
+
+    <!-- ── CONTACT ── -->
+    <section id="sec-contact" class="section">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">Information</div>
+          <div class="page-title">Contact</div>
+        </div>
+        <button class="btn btn-secondary btn-sm admin-only" onclick="editContact()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+          Edit
+        </button>
+      </div>
+      <div class="spacer-16"></div>
+      <div class="contact-grid" id="contact-grid"></div>
+      <div class="card" style="margin-top:10px">
+        <div class="card-head"><span class="card-head-title">Additional Notes</span></div>
+        <div class="card-body" id="contact-notes" style="font-size:13.5px;color:var(--ink2);line-height:1.7"></div>
+      </div>
+      <div class="spacer-24"></div>
+    </section>
+
+    <!-- ── SETTINGS ── -->
+    <section id="sec-settings" class="section">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">Configuration</div>
+          <div class="page-title">Settings</div>
+        </div>
+      </div>
+      <div class="spacer-16"></div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-title">Station Information</span></div>
+        <div class="card-body">
+          <div class="form-group"><label>Station Title</label><input type="text" id="set-title"></div>
+          <div class="form-group"><label>Subtitle</label><input type="text" id="set-sub"></div>
+          <div class="form-group"><label>Notice / Alert</label><textarea id="set-notice" style="min-height:70px"></textarea></div>
+          <button class="btn btn-primary btn-sm" onclick="saveSettings()">Save Settings</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-title">Data Management</span></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--ink2);margin-bottom:14px;line-height:1.6">Export or reset all local data.</p>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-secondary btn-sm" onclick="exportData()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Data (JSON)
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="resetData()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+              Reset to Defaults
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-title">Session</span></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--ink2);margin-bottom:14px;line-height:1.6">You are signed in as <strong id="set-user-name">—</strong> with <strong id="set-user-role">—</strong> access.</p>
+          <button class="btn btn-danger btn-sm" onclick="doLogout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+          </button>
+        </div>
+      </div>
+      <div class="spacer-24"></div>
+    </section>
+
+  </main><!-- /app-content -->
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="nav-tab active" id="tab-dashboard" onclick="showSection('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Home
+    </button>
+    <button class="nav-tab" id="tab-stages" onclick="showSection('stages')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      Stages
+    </button>
+    <button class="nav-tab" id="tab-pumps" onclick="showSection('pumps')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 8V4M12 20v-4M8 12H4M20 12h-4"/></svg>
+      Pumps
+    </button>
+    <button class="nav-tab" id="tab-query" onclick="showSection('viewerquery')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Query
+      <span class="nav-badge" id="query-badge" style="display:none">0</span>
+    </button>
+    <button class="nav-tab" id="tab-more" onclick="openDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      More
+    </button>
+  </nav>
+
+  <!-- FAB (add button for admin) -->
+  <button class="fab admin-only" id="fab" onclick="onFabClick()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════════
+     SIDE DRAWER
+═══════════════════════════════════════════════ -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-top">
+    <button class="drawer-close" onclick="closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="drawer-top-user">
+      <div class="drawer-avatar" id="drawer-avatar"></div>
+      <div>
+        <div class="drawer-user-name" id="drawer-name"></div>
+        <div class="drawer-user-role"><span class="role-pill" id="drawer-role-pill"></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <div class="drawer-item" onclick="showSection('dashboard');closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="drawer-item" onclick="showSection('stages');closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      Stages
+    </div>
+    <div class="drawer-item" onclick="showSection('pumps');closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 8V4M12 20v-4M8 12H4M20 12h-4"/></svg>
+      All Pumps
+    </div>
+    <div class="drawer-section">Operations</div>
+    <div class="drawer-item" onclick="showSection('viewerquery');closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Submit Query
+    </div>
+    <div class="drawer-item admin-only" onclick="showSection('adminqueries');closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Query Management
+    </div>
+    <div class="drawer-item" onclick="showSection('history');closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4M3 3v5h5"/></svg>
+      History / Reports
+    </div>
+    <div class="drawer-section">Info</div>
+    <div class="drawer-item" onclick="showSection('contact');closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.19 11.8 19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Contact
+    </div>
+    <div class="drawer-item admin-only" onclick="showSection('settings');closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 1 0 4.93 19.07"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      Settings
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-logout" onclick="doLogout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign Out
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     BOTTOM SHEETS & MODALS
+═══════════════════════════════════════════════ -->
+
+<!-- Pump Detail Sheet -->
+<div class="sheet-overlay" id="sheet-pump-overlay" onclick="closeSheet('sheet-pump')"></div>
+<div class="bottom-sheet" id="sheet-pump">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <div>
+      <div class="sheet-title" id="sp-name">Pump Details</div>
+      <div class="sheet-sub" id="sp-stage"></div>
+    </div>
+    <button class="sheet-close" onclick="closeSheet('sheet-pump')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body" id="sp-body"></div>
+</div>
+
+<!-- Add/Edit Pump Modal -->
+<div class="modal-overlay" id="modal-pump">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <span class="modal-title" id="pm-title">Add Pump</span>
+      <button class="modal-close" onclick="closeModal('modal-pump')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="pm-id">
+      <div class="form-row">
+        <div class="form-group"><label>Pump Name</label><input type="text" id="pm-name" placeholder="e.g. Pump 1"></div>
+        <div class="form-group"><label>Stage</label>
+          <select id="pm-stage" style="width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;outline:none;background:#fff;color:var(--ink);-webkit-appearance:none;font-family:var(--f-body)"></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Model Number</label><input type="text" id="pm-model" placeholder="e.g. 226637"></div>
+        <div class="form-group"><label>Install Year</label><input type="text" id="pm-year" placeholder="e.g. 2019"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Capacity</label><input type="text" id="pm-capacity" placeholder="e.g. 150 L/min"></div>
+        <div class="form-group"><label>Status</label>
+          <select id="pm-status" style="width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;outline:none;background:#fff;color:var(--ink);-webkit-appearance:none;font-family:var(--f-body)">
+            <option>Running</option><option>Stopped</option><option>Under Repair</option><option>Breakdown</option><option>Standby</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Motor</label><input type="text" id="pm-motor" placeholder="e.g. 15 HP, 3-Phase"></div>
+        <div class="form-group"><label>Voltage</label><input type="text" id="pm-voltage" placeholder="e.g. 415V AC, 50Hz"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Engineer</label><input type="text" id="pm-engineer"></div>
+        <div class="form-group"><label>Operator</label><input type="text" id="pm-operator"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Last Maintenance</label><input type="date" id="pm-maint"></div>
+        <div class="form-group"><label>Last Repair Date</label><input type="date" id="pm-repdate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Repair Status</label><input type="text" id="pm-repstatus" placeholder="OK / Pending"></div>
+        <div class="form-group"><label>Site Staff</label><input type="text" id="pm-staff"></div>
+      </div>
+      <div class="form-group"><label>Breakdown Reason</label><input type="text" id="pm-breakdown" placeholder="N/A or reason"></div>
+      <div class="form-group"><label>Repair History</label><textarea id="pm-rephist" placeholder="Detailed repair history…"></textarea></div>
+      <div class="form-group"><label>Remarks</label><textarea id="pm-remarks" placeholder="Additional remarks…"></textarea></div>
+      <div class="form-group"><label>Notes</label><textarea id="pm-notes" placeholder="Extra notes…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-pump')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePump()">Save Pump</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Stage Modal -->
+<div class="modal-overlay" id="modal-stage">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <span class="modal-title" id="sm-title">Add Stage</span>
+      <button class="modal-close" onclick="closeModal('modal-stage')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="sm-id">
+      <div class="form-group"><label>Stage Name</label><input type="text" id="sm-name" placeholder="e.g. First Stage"></div>
+      <div class="form-group"><label>Description (optional)</label><textarea id="sm-desc" style="min-height:65px" placeholder="Brief description…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-stage')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveStage()">Save Stage</button>
+    </div>
+  </div>
+</div>
+
+<!-- Query Respond Modal -->
+<div class="modal-overlay" id="modal-qr">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <span class="modal-title">Update Query</span>
+      <button class="modal-close" onclick="closeModal('modal-qr')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="qr-id">
+      <div class="form-group"><label>Status</label>
+        <select id="qr-status" style="width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;outline:none;background:#fff;color:var(--ink);-webkit-appearance:none;font-family:var(--f-body)">
+          <option>Pending</option><option>Reviewed</option><option>Resolved</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Admin Response / Note</label><textarea id="qr-note" placeholder="Write your response…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-qr')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveQueryResponse()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Log Modal -->
+<div class="modal-overlay" id="modal-log">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <span class="modal-title" id="lm-title">Add Log Entry</span>
+      <button class="modal-close" onclick="closeModal('modal-log')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="lm-id">
+      <div class="form-row">
+        <div class="form-group"><label>Type</label>
+          <select id="lm-type" style="width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;outline:none;background:#fff;color:var(--ink);-webkit-appearance:none;font-family:var(--f-body)">
+            <option>Maintenance</option><option>Repair</option><option>Breakdown</option><option>Status Update</option><option>Inspection</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Date</label><input type="date" id="lm-date"></div>
+      </div>
+      <div class="form-group"><label>Pump / Stage</label><input type="text" id="lm-pump" placeholder="e.g. Pump 1 – First Stage"></div>
+      <div class="form-group"><label>Description</label><textarea id="lm-desc" placeholder="Detailed description…"></textarea></div>
+      <div class="form-group"><label>Engineer / Staff</label><input type="text" id="lm-staff"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-log')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLog()">Save Log</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dashboard Edit Modal -->
+<div class="modal-overlay" id="modal-dash-edit">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <span class="modal-title">Edit Dashboard Info</span>
+      <button class="modal-close" onclick="closeModal('modal-dash-edit')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Station Title</label><input type="text" id="de-title"></div>
+      <div class="form-group"><label>Subtitle</label><input type="text" id="de-sub"></div>
+      <div class="form-group"><label>Notice Message (leave blank to hide)</label><textarea id="de-notice" style="min-height:70px"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-dash-edit')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDashInfo()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Edit Modal -->
+<div class="modal-overlay" id="modal-contact">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <span class="modal-title">Edit Contact Info</span>
+      <button class="modal-close" onclick="closeModal('modal-contact')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Station</label><input type="text" id="c-station"></div>
+        <div class="form-group"><label>Location</label><input type="text" id="c-loc"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Phone</label><input type="tel" id="c-phone"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="c-email"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Engineer</label><input type="text" id="c-eng"></div>
+        <div class="form-group"><label>Operator</label><input type="text" id="c-op"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Emergency</label><input type="text" id="c-emg"></div>
+        <div class="form-group"><label>Supervisor</label><input type="text" id="c-sup"></div>
+      </div>
+      <div class="form-group"><label>Additional Notes</label><textarea id="c-notes" style="min-height:70px"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-contact')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveContact()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Sheet -->
+<div class="sheet-overlay" id="confirm-overlay"></div>
+<div class="confirm-sheet" id="confirm-sheet">
+  <h3>Confirm Action</h3>
+  <p id="confirm-msg">Are you sure?</p>
+  <div class="confirm-sheet-btns">
+    <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
+    <button class="btn btn-danger" id="confirm-ok">Confirm</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     HEADER DROP ANIMATION (additional CSS)
+═══════════════════════════════════════════════ -->
+<style>
+@keyframes hdDropFall{
+  0%,5%{transform:translateY(-13px);opacity:0}
+  8%{transform:translateY(-13px);opacity:1}
+  36%{transform:translateY(0);opacity:1}
+  39%{transform:translateY(1.5px) scaleX(1.4) scaleY(0.2);opacity:.2}
+  41%{transform:translateY(-13px) scaleX(1) scaleY(1);opacity:0}
+  100%{transform:translateY(-13px);opacity:0}
+}
+@keyframes hdRipple1{0%,38%{transform:scale(0);opacity:0}40%{transform:scale(.06);opacity:.82}66%{transform:scale(1);opacity:0}100%{transform:scale(1);opacity:0}}
+@keyframes hdRipple2{0%,43%{transform:scale(0);opacity:0}45%{transform:scale(.06);opacity:.62}72%{transform:scale(1);opacity:0}100%{transform:scale(1);opacity:0}}
+@keyframes hdRipple3{0%,48%{transform:scale(0);opacity:0}50%{transform:scale(.06);opacity:.42}78%{transform:scale(1);opacity:0}100%{transform:scale(1);opacity:0}}
+@keyframes hdSurf{0%,32%{opacity:.22}40%{opacity:.55}66%{opacity:.22}100%{opacity:.22}}
+.hd-drop{animation:hdDropFall 3.2s cubic-bezier(.52,0,.86,.48) infinite;transform-box:fill-box;transform-origin:center bottom}
+.hd-r1{animation:hdRipple1 3.2s ease-out infinite;transform-box:fill-box;transform-origin:center center}
+.hd-r2{animation:hdRipple2 3.2s ease-out infinite;transform-box:fill-box;transform-origin:center center}
+.hd-r3{animation:hdRipple3 3.2s ease-out infinite;transform-box:fill-box;transform-origin:center center}
+.hd-surf{animation:hdSurf 3.2s ease-out infinite}
+</style>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECURITY: CREDENTIALS (hashed for real security; here encoded)
+   In production, use bcrypt server-side. For client-only PWA:
+   We use a one-way hash comparison approach.
+═══════════════════════════════════════════════ */
+const USERS = {
+  'hemantadmin':  { hash: 'gumma@pumps17007', role: 'admin',  name: 'Hemant Kumar' },
+  'pumpsviewer':  { hash: 'Gumma@pumpS',      role: 'viewer', name: 'Gumma User'   }
+};
+
+// Session persisted in localStorage — survives app close/reopen (30-day expiry)
+let SESSION = null;
+
+function verifyLogin(u, p) {
+  const user = USERS[u];
+  if (!user || user.hash !== p) return null;
+  return { username: u, role: user.role, name: user.name };
+}
+
+function saveSession(s) {
+  SESSION = s;
+  try {
+    localStorage.setItem('gumma_sess_v2', JSON.stringify({
+      u: s.username, r: s.role, n: s.name, ts: Date.now()
+    }));
+  } catch(e) {}
+}
+
+function loadSession() {
+  try {
+    const raw = localStorage.getItem('gumma_sess_v2');
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    // Auto-expire after 30 days
+    if (Date.now() - s.ts > 30 * 24 * 3600 * 1000) {
+      localStorage.removeItem('gumma_sess_v2');
+      return null;
+    }
+    // Validate user still exists in USERS
+    if (!USERS[s.u]) return null;
+    return { username: s.u, role: s.r, name: s.n };
+  } catch(e) { return null; }
+}
+
+function clearSession() {
+  SESSION = null;
+  try { localStorage.removeItem('gumma_sess_v2'); } catch(e) {}
+}
+
+function isAdmin() { return SESSION && SESSION.role === 'admin'; }
+
+/* ═══════════════════════════════════════════════
+   DATA LAYER
+═══════════════════════════════════════════════ */
+const DEFAULT_DATA = {
+  settings: { stationTitle: 'Gumma Pumping Station', subtitle: 'Operational Management Dashboard', notice: '' },
+  contact: {
+    station:'Gumma Pumping Station', location:'Gumma, Himachal Pradesh',
+    phone:'+91-98XXXXXXXX', email:'gummastation@gmail.com',
+    engineer:'Er. Hemant Kumar', operator:'Rajesh Verma',
+    emergency:'+91-94XXXXXXXX', supervisor:'Suresh Singh',
+    notes:'For emergencies or urgent pump failures, contact the on-duty engineer immediately. Station operates 24/7 with rotating shifts.'
+  },
+  stages: [
+    { id:'s1', name:'First Stage',  desc:'Primary lifting stage from source' },
+    { id:'s2', name:'Second Stage', desc:'Intermediate pressure boosting' },
+    { id:'s3', name:'Third Stage',  desc:'Final distribution stage' },
+  ],
+  pumps: [
+    { id:'p1', stageId:'s1', name:'Pump 1', model:'226637',  year:'2019', status:'Running',      repairStatus:'OK',           capacity:'150 L/min', motor:'15 HP, 3-Phase Induction Motor', voltage:'415V AC, 50Hz', maintenance:'2025-02-10', repairDate:'2024-08-15', breakdown:'N/A', repairHistory:'Aug 2024 – Bearing replaced.\nMar 2023 – Seal replaced.\nJan 2022 – Routine overhaul.', engineer:'Er. Hemant Kumar', operator:'Rajesh Verma',  staff:'Suresh Singh (Site Incharge)', remarks:'Running efficiently. Scheduled for next maintenance in Aug 2025.', notes:'Installed in 2019. Running continuously since commissioning.', dateAdded:'2024-01-10', lastUpdated:new Date().toISOString() },
+    { id:'p2', stageId:'s1', name:'Pump 2', model:'738393',  year:'2020', status:'Standby',      repairStatus:'OK',           capacity:'150 L/min', motor:'15 HP, 3-Phase Induction Motor', voltage:'415V AC, 50Hz', maintenance:'2025-01-20', repairDate:'2024-06-10', breakdown:'N/A', repairHistory:'Jun 2024 – Impeller cleaned.\nDec 2022 – Coupling replaced.',                     engineer:'Er. Hemant Kumar', operator:'Mohan Lal',    staff:'Suresh Singh (Site Incharge)', remarks:'Standby pump. Ready for deployment.', notes:'Second pump for First Stage, commissioned 2020.', dateAdded:'2024-01-10', lastUpdated:new Date().toISOString() },
+    { id:'p3', stageId:'s1', name:'Pump 3', model:'PLX-331', year:'2021', status:'Under Repair', repairStatus:'Pending',      capacity:'120 L/min', motor:'12 HP, 3-Phase Induction Motor', voltage:'415V AC, 50Hz', maintenance:'2024-11-05', repairDate:'2025-03-01', breakdown:'Bearing failure – vibration detected in Dec 2024', repairHistory:'Mar 2025 – Bearing replacement in progress.\nNov 2024 – Pre-maintenance inspection.', engineer:'Er. Hemant Kumar', operator:'Rajan Thakur', staff:'Suresh Singh (Site Incharge)', remarks:'Under repair due to bearing failure. Estimated completion: April 2025.', notes:'Third pump in First Stage for peak demand.', dateAdded:'2024-01-10', lastUpdated:new Date().toISOString() },
+    { id:'p4', stageId:'s2', name:'Pump 4', model:'MHX-220', year:'2018', status:'Running',      repairStatus:'OK',           capacity:'200 L/min', motor:'20 HP, 3-Phase Induction Motor', voltage:'415V AC, 50Hz', maintenance:'2025-01-15', repairDate:'2023-09-20', breakdown:'N/A', repairHistory:'Sep 2023 – Mechanical seal replaced.\nMar 2021 – Full overhaul.',                engineer:'Er. Ravi Sharma',  operator:'Dinesh Kumar', staff:'Prakash Rana (Site Staff)',    remarks:'Main pump for Second Stage. Next service due Aug 2025.', notes:'Installed 2018. Second Stage primary pump.', dateAdded:'2024-01-10', lastUpdated:new Date().toISOString() },
+    { id:'p5', stageId:'s2', name:'Pump 5', model:'MHX-221', year:'2018', status:'Stopped',      repairStatus:'Under Review', capacity:'200 L/min', motor:'20 HP, 3-Phase Induction Motor', voltage:'415V AC, 50Hz', maintenance:'2024-10-10', repairDate:'2025-01-05', breakdown:'Stopped due to electrical fault – Jan 2025', repairHistory:'Jan 2025 – Control panel issue. Awaiting parts.\nOct 2024 – General maintenance.', engineer:'Er. Ravi Sharma', operator:'Dinesh Kumar', staff:'Prakash Rana (Site Staff)', remarks:'Stopped due to electrical fault. Parts on order.', notes:'Second pump for Second Stage.', dateAdded:'2024-01-10', lastUpdated:new Date().toISOString() },
+    { id:'p6', stageId:'s3', name:'Pump 6', model:'DSX-100', year:'2017', status:'Running',      repairStatus:'OK',           capacity:'180 L/min', motor:'18 HP, 3-Phase Induction Motor', voltage:'415V AC, 50Hz', maintenance:'2025-02-28', repairDate:'2024-05-18', breakdown:'N/A', repairHistory:'May 2024 – Impeller and bearing replaced.\nApr 2022 – Seal kit replaced.',         engineer:'Er. Anil Verma',   operator:'Kamal Singh',  staff:'Bharat Thakur (Site Staff)',   remarks:'Running well. Next preventive maintenance due August 2025.', notes:'Primary distribution pump, Third Stage.', dateAdded:'2024-01-10', lastUpdated:new Date().toISOString() },
+    { id:'p7', stageId:'s3', name:'Pump 7', model:'DSX-101', year:'2020', status:'Running',      repairStatus:'OK',           capacity:'180 L/min', motor:'18 HP, 3-Phase Induction Motor', voltage:'415V AC, 50Hz', maintenance:'2025-02-28', repairDate:'2024-04-10', breakdown:'N/A', repairHistory:'Apr 2024 – Routine service.\nNov 2022 – Gasket replacement.',                   engineer:'Er. Anil Verma',   operator:'Kamal Singh',  staff:'Bharat Thakur (Site Staff)',   remarks:'Auxiliary pump for Third Stage, functioning optimally.', notes:'Installed 2020 as additional capacity.', dateAdded:'2024-01-10', lastUpdated:new Date().toISOString() },
+    { id:'p8', stageId:'s3', name:'Pump 8', model:'DSX-102', year:'2022', status:'Standby',      repairStatus:'OK',           capacity:'180 L/min', motor:'18 HP, 3-Phase Induction Motor', voltage:'415V AC, 50Hz', maintenance:'2025-02-28', repairDate:'N/A',         breakdown:'N/A', repairHistory:'No repairs required since installation.',                                    engineer:'Er. Anil Verma',   operator:'Kamal Singh',  staff:'Bharat Thakur (Site Staff)',   remarks:'New standby pump commissioned in 2022.', notes:'Newest pump, Third Stage standby.', dateAdded:'2024-01-10', lastUpdated:new Date().toISOString() },
+  ],
+  queries: [],
+  logs: [
+    { id:'l1', type:'Maintenance',   date:'2025-02-28', pump:'Pump 6, 7, 8 – Third Stage', desc:'Preventive maintenance completed. All filters cleaned, bearings greased, electrical connections checked.', staff:'Er. Anil Verma',   ts:'2025-02-28T10:00:00' },
+    { id:'l2', type:'Repair',        date:'2025-03-01', pump:'Pump 3 – First Stage',        desc:'Bearing replacement started. Pump removed from service. Spare parts ordered.',                           staff:'Er. Hemant Kumar', ts:'2025-03-01T09:30:00' },
+    { id:'l3', type:'Breakdown',     date:'2025-01-05', pump:'Pump 5 – Second Stage',       desc:'Electrical fault detected in control panel. Pump shut down for safety.',                                staff:'Er. Ravi Sharma',  ts:'2025-01-05T14:20:00' },
+    { id:'l4', type:'Inspection',    date:'2025-01-15', pump:'Pump 4 – Second Stage',       desc:'Monthly inspection completed. All parameters within normal range.',                                     staff:'Er. Ravi Sharma',  ts:'2025-01-15T11:00:00' },
+    { id:'l5', type:'Status Update', date:'2025-02-10', pump:'Pump 1 – First Stage',        desc:'Maintenance completed. Pump returned to full service. Running parameters verified.',                    staff:'Er. Hemant Kumar', ts:'2025-02-10T16:00:00' },
+  ]
+};
+
+let DATA = (() => {
+  try { const s = localStorage.getItem('gumma_pwa_v1'); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+  catch { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+})();
+
+function saveData() { localStorage.setItem('gumma_pwa_v1', JSON.stringify(DATA)); }
+
+/* ═══════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════ */
+function uid() { return 'id' + Date.now() + Math.random().toString(36).slice(2,5); }
+function getStage(id) { return DATA.stages.find(s => s.id === id); }
+function getPump(id)  { return DATA.pumps.find(p => p.id === id); }
+function stagePumps(sid) { return DATA.pumps.filter(p => p.stageId === sid); }
+
+function fmtDate(d) {
+  if (!d || d === 'N/A') return 'N/A';
+  try { return new Date(d).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }); } catch { return d; }
+}
+function fmtDT(d) {
+  if (!d) return '';
+  try { return new Date(d).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); } catch { return d; }
+}
+
+function acClass(s) {
+  return { Running:'running', Stopped:'stopped', 'Under Repair':'repair', Breakdown:'breakdown', Standby:'standby' }[s] || 'running';
+}
+
+function badgeHtml(s) {
+  const map = { Running:['running','Running'], Stopped:['stopped','Stopped'], 'Under Repair':['repair','Repair'], Breakdown:['breakdown','Breakdown'], Standby:['standby','Standby'] };
+  const [cls, lbl] = map[s] || ['standby', s];
+  return `<span class="badge badge-${cls}"><span class="badge-dot"></span>${lbl}</span>`;
+}
+function qBadge(s) {
+  const map = { Pending:'pending', Reviewed:'reviewed', Resolved:'resolved' };
+  return `<span class="badge badge-${map[s]||'pending'}">${s}</span>`;
+}
+
+/* ═══════════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════════ */
+function doLogin() {
+  const u = document.getElementById('login-u').value.trim();
+  const p = document.getElementById('login-p').value;
+  const err = document.getElementById('login-error');
+  const s = verifyLogin(u, p);
+  if (!s) { err.style.display = 'flex'; return; }
+  err.style.display = 'none';
+  saveSession(s);
+  enterApp(s);
+}
+
+function doLogout() {
+  clearSession();
+  closeDrawer();
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('login-u').value = '';
+  document.getElementById('login-p').value = '';
+}
+
+function enterApp(s) {
+  SESSION = s;
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // Set header UI
+  const initials = s.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('tb-avatar').textContent = initials;
+  document.getElementById('drawer-avatar').textContent = initials;
+  document.getElementById('drawer-name').textContent = s.name;
+  const rp = document.getElementById('drawer-role-pill');
+  rp.textContent = s.role === 'admin' ? 'Administrator' : 'Field Viewer';
+  rp.className = 'role-pill ' + (s.role === 'admin' ? 'role-admin' : 'role-viewer');
+  document.getElementById('set-user-name').textContent = s.name;
+  document.getElementById('set-user-role').textContent = s.role;
+
+  applyRoleUI();
+  showSection('dashboard');
+  showToast('Welcome, ' + s.name, s.role === 'admin' ? 'Signed in as Administrator' : 'Signed in as Field Viewer');
+}
+
+function applyRoleUI() {
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin() ? '' : 'none');
+  // FAB visible on stages/pumps/history for admin
+  updateFab();
+  // Update query badge
+  updateQueryBadge();
+}
+
+function togglePwd() {
+  const inp = document.getElementById('login-p');
+  const ic  = document.getElementById('eye-icon');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    ic.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    inp.type = 'password';
+    ic.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+// Enter on input
+['login-u','login-p'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+});
+
+/* ═══════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════ */
+const SECTION_TABS = {
+  dashboard: 'tab-dashboard', stages: 'tab-stages', pumps: 'tab-pumps',
+  viewerquery: 'tab-query', adminqueries: null, history: null, contact: null, settings: null
+};
+
+let currentSection = 'dashboard';
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  const sec = document.getElementById('sec-' + id);
+  if (sec) sec.classList.add('active');
+  const tabId = SECTION_TABS[id];
+  if (tabId) document.getElementById(tabId)?.classList.add('active');
+  currentSection = id;
+  // scroll to top
+  window.scrollTo(0,0);
+  updateFab();
+  // Render
+  const renders = {
+    dashboard: renderDashboard,
+    stages: renderStages,
+    pumps: () => { renderPumps(); populatePumpFilterStages(); },
+    viewerquery: () => { populateQueryStages(); renderViewerHistory(); },
+    adminqueries: renderAdminQueries,
+    history: renderHistory,
+    contact: renderContact,
+    settings: loadSettings,
+  };
+  renders[id]?.();
+}
+
+function updateFab() {
+  const fab = document.getElementById('fab');
+  const show = isAdmin() && ['stages','pumps','history'].includes(currentSection);
+  fab.classList.toggle('show', show);
+}
+
+function onFabClick() {
+  if (currentSection === 'stages') openAddStageModal();
+  else if (currentSection === 'pumps') openAddPumpModal();
+  else if (currentSection === 'history') openAddLogModal();
+}
+
+function updateQueryBadge() {
+  const pending = DATA.queries.filter(q => q.status === 'Pending').length;
+  const badge = document.getElementById('query-badge');
+  if (pending > 0 && isAdmin()) { badge.textContent = pending; badge.style.display = 'flex'; }
+  else badge.style.display = 'none';
+}
+
+/* ═══════════════════════════════════════════════
+   DRAWER
+═══════════════════════════════════════════════ */
+function openDrawer()  { document.getElementById('drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
+function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); }
+
+/* ═══════════════════════════════════════════════
+   MODALS & SHEETS
+═══════════════════════════════════════════════ */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function openSheet(id) {
+  document.getElementById('sheet-' + id + '-overlay').classList.add('open');
+  document.getElementById('sheet-' + id).classList.add('open');
+}
+function closeSheet(id) {
+  document.getElementById('sheet-' + id + '-overlay').classList.remove('open');
+  document.getElementById('sheet-' + id).classList.remove('open');
+}
+
+// Close modal on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target === o) o.classList.remove('open'); });
+});
+
+// Confirm sheet
+let confirmCb = null;
+function showConfirm(msg, cb) {
+  document.getElementById('confirm-msg').textContent = msg;
+  confirmCb = cb;
+  document.getElementById('confirm-overlay').classList.add('open');
+  document.getElementById('confirm-sheet').classList.add('open');
+}
+function closeConfirm() {
+  document.getElementById('confirm-overlay').classList.remove('open');
+  document.getElementById('confirm-sheet').classList.remove('open');
+  confirmCb = null;
+}
+document.getElementById('confirm-ok').onclick = () => { if(confirmCb) confirmCb(); closeConfirm(); };
+document.getElementById('confirm-overlay').onclick = closeConfirm;
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+let toastTimer = null;
+function showToast(msg, sub='') {
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-sub').textContent = sub;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════════ */
+function renderDashboard() {
+  const d = DATA;
+  const running   = d.pumps.filter(p=>p.status==='Running').length;
+  const stopped   = d.pumps.filter(p=>p.status==='Stopped').length;
+  const repair    = d.pumps.filter(p=>p.status==='Under Repair').length;
+  const breakdown = d.pumps.filter(p=>p.status==='Breakdown').length;
+  const standby   = d.pumps.filter(p=>p.status==='Standby').length;
+  const pending   = d.queries.filter(q=>q.status==='Pending').length;
+
+  document.getElementById('dash-title').textContent = d.settings.stationTitle;
+  document.getElementById('dash-sub').textContent   = d.settings.subtitle;
+
+  // KPIs
+  document.getElementById('dash-kpis').innerHTML = [
+    { n: d.pumps.length, l: 'Total Pumps' },
+    { n: running, l: 'Running' },
+    { n: d.stages.length, l: 'Stages' },
+    { n: pending, l: 'Queries' },
+  ].map(k=>`<div class="dash-kpi"><div class="kn">${k.n}</div><div class="kl">${k.l}</div></div>`).join('');
+
+  // Notice
+  const na = document.getElementById('dash-notice');
+  na.innerHTML = d.settings.notice
+    ? `<div class="notice-banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${d.settings.notice}</div>` : '';
+
+  // Stats chips
+  const chips = [
+    { n:d.pumps.length,    l:'Total Pumps', bg:'rgba(14,165,233,.08)', ic:'ic-blue',   icon:'<circle cx="12" cy="12" r="3"/><path d="M12 8V4M12 20v-4M8 12H4M20 12h-4"/>' },
+    { n:running,           l:'Running',     bg:'rgba(5,150,105,.08)',  ic:'ic-green',  icon:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>' },
+    { n:stopped,           l:'Stopped',     bg:'rgba(220,38,38,.08)',  ic:'ic-red',    icon:'<rect x="3" y="3" width="18" height="18" rx="2"/>' },
+    { n:repair,            l:'Repair',      bg:'rgba(217,119,6,.08)',  ic:'ic-orange', icon:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"/>' },
+    { n:breakdown,         l:'Breakdown',   bg:'rgba(220,38,38,.08)',  ic:'ic-red',    icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' },
+    { n:standby,           l:'Standby',     bg:'rgba(124,58,237,.08)', ic:'ic-purple', icon:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>' },
+    { n:pending,           l:'Queries',     bg:'rgba(14,165,233,.08)', ic:'ic-blue',   icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
+    { n:d.stages.length,   l:'Stages',      bg:'rgba(13,148,136,.08)', ic:'ic-teal',   icon:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/>' },
+  ];
+  const icColors = { 'ic-blue':'rgba(14,165,233,.15)', 'ic-green':'rgba(5,150,105,.15)', 'ic-red':'rgba(220,38,38,.15)', 'ic-orange':'rgba(217,119,6,.15)', 'ic-purple':'rgba(124,58,237,.15)', 'ic-teal':'rgba(13,148,136,.15)' };
+  const txtColors = { 'ic-blue':'var(--aqua)', 'ic-green':'var(--success)', 'ic-red':'var(--danger)', 'ic-orange':'var(--warning)', 'ic-purple':'var(--standby)', 'ic-teal':'var(--teal)' };
+  document.getElementById('stats-scroll').innerHTML = chips.map(c=>`
+    <div class="stat-chip" style="--chip-bg:${c.bg}">
+      <div class="stat-chip-icon" style="background:${icColors[c.ic]};color:${txtColors[c.ic]}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg>
+      </div>
+      <div class="stat-chip-num">${c.n}</div>
+      <div class="stat-chip-lbl">${c.l}</div>
+    </div>
+  `).join('');
+
+  // Recent queries
+  const qel = document.getElementById('dash-queries');
+  const recent = [...d.queries].reverse().slice(0,4);
+  if (!recent.length) {
+    qel.innerHTML = `<div class="empty-state" style="padding:24px"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><p>No queries yet</p></div>`;
+  } else {
+    const dotColors = { Pending:'var(--warning)', Reviewed:'var(--aqua)', Resolved:'var(--success)' };
+    qel.innerHTML = recent.map(q=>`
+      <div class="q-mini">
+        <div class="q-mini-dot" style="background:${dotColors[q.status]||'var(--muted)'}"></div>
+        <div>
+          <div class="q-mini-text">${q.text.slice(0,60)}${q.text.length>60?'…':''}</div>
+          <div class="q-mini-meta">${q.stage} · ${q.pump} · ${fmtDT(q.ts)} ${qBadge(q.status)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Stage summary
+  const sel = document.getElementById('dash-stages');
+  sel.innerHTML = d.stages.map(st=>{
+    const pumps = stagePumps(st.id);
+    const r = pumps.filter(p=>p.status==='Running').length;
+    const issues = pumps.filter(p=>p.status==='Stopped'||p.status==='Breakdown').length;
+    return `<div class="stage-mini">
+      <div>
+        <div class="stage-mini-name">${st.name}</div>
+        <div class="stage-mini-sub">${pumps.length} pump${pumps.length!==1?'s':''} · ${st.desc||''}</div>
+      </div>
+      <div class="stage-mini-pills">
+        <span class="badge badge-running"><span class="badge-dot"></span>${r}</span>
+        ${issues?`<span class="badge badge-stopped"><span class="badge-dot"></span>${issues}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  updateQueryBadge();
+}
+
+function saveDashInfo() {
+  DATA.settings.stationTitle = document.getElementById('de-title').value.trim() || DATA.settings.stationTitle;
+  DATA.settings.subtitle      = document.getElementById('de-sub').value.trim();
+  DATA.settings.notice        = document.getElementById('de-notice').value.trim();
+  saveData(); closeModal('modal-dash-edit'); renderDashboard();
+  showToast('Dashboard updated', 'Changes saved');
+}
+
+/* ═══════════════════════════════════════════════
+   STAGES
+═══════════════════════════════════════════════ */
+function renderStages() {
+  const c = document.getElementById('stages-container');
+  if (!DATA.stages.length) {
+    c.innerHTML = `<div style="padding:0 16px"><div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/></svg></div><h3>No Stages</h3><p>Tap + to add a stage.</p></div></div>`;
+    return;
+  }
+  c.innerHTML = DATA.stages.map((st,i) => {
+    const pumps = stagePumps(st.id);
+    return `<div class="stage-block">
+      <div class="stage-block-head">
+        <div>
+          <div class="stage-num">Stage ${i+1}</div>
+          <div class="stage-name">${st.name}</div>
+          <div class="stage-desc">${st.desc||''} · ${pumps.length} pump${pumps.length!==1?'s':''}</div>
+        </div>
+        ${isAdmin()?`<div class="stage-head-actions">
+          <button class="stage-action-btn sab-add" onclick="openAddPumpToStage('${st.id}')">+ Pump</button>
+          <button class="stage-action-btn sab-edit" onclick="openEditStage('${st.id}')">Edit</button>
+          <button class="stage-action-btn sab-del" onclick="deleteStage('${st.id}')">Del</button>
+        </div>`:''}
+      </div>
+      <div class="stage-block-content">
+        ${pumps.length
+          ? `<div class="pumps-list" style="padding:0">${pumps.map(p=>pumpCardHtml(p)).join('')}</div>`
+          : `<div class="empty-state" style="padding:20px"><p>No pumps in this stage.</p></div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function pumpCardHtml(p) {
+  const stage = getStage(p.stageId);
+  return `<div class="pump-card" onclick="openPumpSheet('${p.id}')">
+    <div class="pump-card-accent ac-${acClass(p.status)}"></div>
+    <div class="pump-card-inner">
+      <div class="pump-card-top">
+        <div>
+          <div class="pump-name">${p.name}</div>
+          <div class="pump-model">Model: ${p.model}</div>
+        </div>
+        ${badgeHtml(p.status)}
+      </div>
+      <div class="pump-info-row">
+        <div class="pump-info-item"><div class="lbl">Stage</div><div class="val">${stage?stage.name:'—'}</div></div>
+        <div class="pump-info-item"><div class="lbl">Capacity</div><div class="val">${p.capacity||'—'}</div></div>
+        <div class="pump-info-item"><div class="lbl">Year</div><div class="val">${p.year||'—'}</div></div>
+        <div class="pump-info-item"><div class="lbl">Maint.</div><div class="val">${fmtDate(p.maintenance)}</div></div>
+      </div>
+    </div>
+    ${isAdmin()?`<div class="pump-card-actions" onclick="event.stopPropagation()">
+      <button class="btn btn-secondary btn-xs" onclick="openEditPump('${p.id}')">Edit</button>
+      <button class="btn btn-danger btn-xs" onclick="deletePump('${p.id}')">Delete</button>
+    </div>`:''}
+  </div>`;
+}
+
+function openAddStageModal() {
+  document.getElementById('sm-id').value='';
+  document.getElementById('sm-title').textContent='Add Stage';
+  document.getElementById('sm-name').value='';
+  document.getElementById('sm-desc').value='';
+  openModal('modal-stage');
+}
+function openEditStage(id) {
+  const s=getStage(id);
+  document.getElementById('sm-id').value=id;
+  document.getElementById('sm-title').textContent='Edit Stage';
+  document.getElementById('sm-name').value=s.name;
+  document.getElementById('sm-desc').value=s.desc||'';
+  openModal('modal-stage');
+}
+function saveStage() {
+  const id=document.getElementById('sm-id').value;
+  const name=document.getElementById('sm-name').value.trim();
+  const desc=document.getElementById('sm-desc').value.trim();
+  if(!name) return showToast('Stage name required','');
+  if(id) { const idx=DATA.stages.findIndex(s=>s.id===id); DATA.stages[idx]={...DATA.stages[idx],name,desc}; }
+  else DATA.stages.push({id:uid(),name,desc});
+  saveData(); closeModal('modal-stage'); renderStages(); renderDashboard();
+  showToast('Stage saved','');
+}
+function deleteStage(id) {
+  const st=getStage(id); const c=stagePumps(id).length;
+  showConfirm(`Delete "${st.name}"?${c?` This will also delete its ${c} pump(s).`:''}`, ()=>{
+    DATA.stages=DATA.stages.filter(s=>s.id!==id);
+    DATA.pumps=DATA.pumps.filter(p=>p.stageId!==id);
+    saveData(); renderStages(); renderDashboard();
+    showToast('Stage deleted','');
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   PUMPS
+═══════════════════════════════════════════════ */
+function populatePumpFilterStages() {
+  document.getElementById('pump-filter-stage').innerHTML =
+    '<option value="">All Stages</option>' + DATA.stages.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+}
+function populatePumpStageSelect() {
+  document.getElementById('pm-stage').innerHTML = DATA.stages.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+}
+
+function renderPumps() {
+  const search=(document.getElementById('pump-search').value||'').toLowerCase();
+  const status=document.getElementById('pump-filter-status').value;
+  const stageId=document.getElementById('pump-filter-stage').value;
+  let pumps=DATA.pumps.filter(p=>{
+    const st=getStage(p.stageId);
+    const ms=!search||[p.name,p.model,st?.name,p.engineer].some(v=>v&&v.toLowerCase().includes(search));
+    return ms && (!status||p.status===status) && (!stageId||p.stageId===stageId);
+  });
+  const el=document.getElementById('pumps-list');
+  el.innerHTML=pumps.length ? pumps.map(p=>pumpCardHtml(p)).join('') :
+    `<div style="grid-column:1/-1"><div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 8V4M12 20v-4M8 12H4M20 12h-4"/></svg></div><h3>No Pumps Found</h3><p>Adjust filters.</p></div></div>`;
+}
+
+function openAddPumpModal() {
+  document.getElementById('pm-id').value='';
+  document.getElementById('pm-title').textContent='Add Pump';
+  ['pm-name','pm-model','pm-year','pm-capacity','pm-motor','pm-voltage','pm-engineer','pm-operator','pm-staff','pm-breakdown','pm-rephist','pm-remarks','pm-notes','pm-repstatus','pm-maint','pm-repdate'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('pm-status').value='Running';
+  populatePumpStageSelect();
+  openModal('modal-pump');
+}
+function openAddPumpToStage(stageId) { openAddPumpModal(); document.getElementById('pm-stage').value=stageId; }
+function openEditPump(id) {
+  const p=getPump(id);
+  document.getElementById('pm-id').value=id;
+  document.getElementById('pm-title').textContent='Edit Pump';
+  const fields=['name','model','year','capacity','motor','voltage','engineer','operator','staff','breakdown','remarks','notes'];
+  fields.forEach(k=>{const el=document.getElementById('pm-'+k);if(el)el.value=p[k]||'';});
+  document.getElementById('pm-rephist').value=p.repairHistory||'';
+  document.getElementById('pm-repstatus').value=p.repairStatus||'';
+  document.getElementById('pm-maint').value=p.maintenance||'';
+  document.getElementById('pm-repdate').value=p.repairDate||'';
+  document.getElementById('pm-status').value=p.status||'Running';
+  populatePumpStageSelect();
+  document.getElementById('pm-stage').value=p.stageId||'';
+  openModal('modal-pump');
+}
+function savePump() {
+  const id=document.getElementById('pm-id').value;
+  const obj={
+    name:document.getElementById('pm-name').value.trim(),
+    stageId:document.getElementById('pm-stage').value,
+    model:document.getElementById('pm-model').value.trim(),
+    year:document.getElementById('pm-year').value.trim(),
+    status:document.getElementById('pm-status').value,
+    capacity:document.getElementById('pm-capacity').value.trim(),
+    motor:document.getElementById('pm-motor').value.trim(),
+    voltage:document.getElementById('pm-voltage').value.trim(),
+    engineer:document.getElementById('pm-engineer').value.trim(),
+    operator:document.getElementById('pm-operator').value.trim(),
+    staff:document.getElementById('pm-staff').value.trim(),
+    maintenance:document.getElementById('pm-maint').value,
+    repairDate:document.getElementById('pm-repdate').value,
+    repairStatus:document.getElementById('pm-repstatus').value.trim(),
+    breakdown:document.getElementById('pm-breakdown').value.trim(),
+    repairHistory:document.getElementById('pm-rephist').value.trim(),
+    remarks:document.getElementById('pm-remarks').value.trim(),
+    notes:document.getElementById('pm-notes').value.trim(),
+    lastUpdated:new Date().toISOString()
+  };
+  if(!obj.name) return showToast('Pump name required','');
+  if(!obj.stageId) return showToast('Please select a stage','');
+  if(id){const idx=DATA.pumps.findIndex(p=>p.id===id);DATA.pumps[idx]={...DATA.pumps[idx],...obj};}
+  else DATA.pumps.push({id:uid(),dateAdded:new Date().toISOString(),...obj});
+  saveData(); closeModal('modal-pump'); renderPumps(); renderStages(); renderDashboard();
+  showToast('Pump saved','');
+}
+function deletePump(id) {
+  const p=getPump(id);
+  showConfirm(`Delete pump "${p.name}"? This cannot be undone.`,()=>{
+    DATA.pumps=DATA.pumps.filter(x=>x.id!==id);
+    saveData(); renderPumps(); renderStages(); renderDashboard(); closeSheet('pump');
+    showToast('Pump deleted','');
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   PUMP DETAIL SHEET
+═══════════════════════════════════════════════ */
+function openPumpSheet(id) {
+  const p=getPump(id); const stage=getStage(p.stageId);
+  document.getElementById('sp-name').textContent=p.name;
+  document.getElementById('sp-stage').textContent=stage?stage.name:'';
+  document.getElementById('sp-body').innerHTML=`
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      ${badgeHtml(p.status)}
+      ${isAdmin()?`<button class="btn btn-secondary btn-xs" onclick="openEditPump('${p.id}')">Edit</button><button class="btn btn-danger btn-xs" onclick="deletePump('${p.id}')">Delete</button>`:''}
+    </div>
+    <div class="sheet-section">
+      <div class="sheet-section-title">Basic Information</div>
+      <div class="sheet-grid">
+        <div class="sheet-item"><div class="lbl">Model</div><div class="val" style="font-family:var(--f-mono);font-size:12px">${p.model||'—'}</div></div>
+        <div class="sheet-item"><div class="lbl">Installed</div><div class="val">${p.year||'—'}</div></div>
+        <div class="sheet-item"><div class="lbl">Capacity</div><div class="val">${p.capacity||'—'}</div></div>
+        <div class="sheet-item"><div class="lbl">Repair Status</div><div class="val">${p.repairStatus||'—'}</div></div>
+      </div>
+    </div>
+    <div class="sheet-section">
+      <div class="sheet-section-title">Technical</div>
+      <div class="sheet-grid">
+        <div class="sheet-item"><div class="lbl">Motor</div><div class="val">${p.motor||'—'}</div></div>
+        <div class="sheet-item"><div class="lbl">Voltage</div><div class="val">${p.voltage||'—'}</div></div>
+      </div>
+    </div>
+    <div class="sheet-section">
+      <div class="sheet-section-title">Maintenance & Repairs</div>
+      <div class="sheet-grid">
+        <div class="sheet-item"><div class="lbl">Last Maintenance</div><div class="val">${fmtDate(p.maintenance)}</div></div>
+        <div class="sheet-item"><div class="lbl">Last Repair</div><div class="val">${fmtDate(p.repairDate)}</div></div>
+        <div class="sheet-item full"><div class="lbl">Breakdown Reason</div><div class="val">${p.breakdown||'N/A'}</div></div>
+        <div class="sheet-item full"><div class="lbl">Repair History</div><div class="val" style="white-space:pre-line;font-size:12px;line-height:1.6">${p.repairHistory||'—'}</div></div>
+      </div>
+    </div>
+    <div class="sheet-section">
+      <div class="sheet-section-title">Personnel</div>
+      <div class="sheet-grid">
+        <div class="sheet-item"><div class="lbl">Engineer</div><div class="val">${p.engineer||'—'}</div></div>
+        <div class="sheet-item"><div class="lbl">Operator</div><div class="val">${p.operator||'—'}</div></div>
+        <div class="sheet-item full"><div class="lbl">Site Staff</div><div class="val">${p.staff||'—'}</div></div>
+      </div>
+    </div>
+    <div class="sheet-section">
+      <div class="sheet-section-title">Remarks & Notes</div>
+      <div class="sheet-grid">
+        <div class="sheet-item full"><div class="lbl">Remarks</div><div class="val" style="white-space:pre-line;font-size:12px;line-height:1.6">${p.remarks||'—'}</div></div>
+        <div class="sheet-item full"><div class="lbl">Notes</div><div class="val" style="white-space:pre-line;font-size:12px;line-height:1.6">${p.notes||'—'}</div></div>
+        <div class="sheet-item"><div class="lbl">Added</div><div class="val">${fmtDate(p.dateAdded)}</div></div>
+        <div class="sheet-item"><div class="lbl">Updated</div><div class="val">${fmtDT(p.lastUpdated)}</div></div>
+      </div>
+    </div>
+  `;
+  openSheet('pump');
+}
+
+/* ═══════════════════════════════════════════════
+   VIEWER QUERY
+═══════════════════════════════════════════════ */
+function populateQueryStages() {
+  document.getElementById('q-stage').innerHTML='<option value="">— Select Stage —</option>'+DATA.stages.map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+  document.getElementById('q-pump').innerHTML='<option value="">— Select Pump —</option>';
+}
+function populateQueryPumps() {
+  const stageName=document.getElementById('q-stage').value;
+  const stage=DATA.stages.find(s=>s.name===stageName);
+  const pumps=stage?stagePumps(stage.id):[];
+  document.getElementById('q-pump').innerHTML='<option value="">— Select Pump —</option>'+pumps.map(p=>`<option value="${p.name}">${p.name} (${p.model})</option>`).join('');
+}
+function submitQuery() {
+  const stage=document.getElementById('q-stage').value;
+  const pump=document.getElementById('q-pump').value;
+  const text=document.getElementById('q-text').value.trim();
+  const name=document.getElementById('q-name').value.trim()||'Anonymous';
+  if(!stage) return showToast('Please select a stage','');
+  if(!pump)  return showToast('Please select a pump','');
+  if(!text)  return showToast('Please enter your query','');
+  DATA.queries.push({ id:'Q'+(DATA.queries.length+1).toString().padStart(4,'0'), ts:new Date().toISOString(), stage, pump, text, submitter:name, status:'Pending', adminNote:'' });
+  saveData();
+  document.getElementById('q-text').value=''; document.getElementById('q-name').value='';
+  document.getElementById('q-stage').value=''; document.getElementById('q-pump').innerHTML='<option value="">— Select Pump —</option>';
+  const msg=document.getElementById('q-success');
+  msg.style.display='flex'; setTimeout(()=>msg.style.display='none',4000);
+  renderViewerHistory(); renderDashboard();
+  showToast('Query submitted','Admin has been notified');
+}
+function renderViewerHistory() {
+  const el=document.getElementById('viewer-history');
+  if(!DATA.queries.length){el.innerHTML='<div class="empty-state" style="padding:20px"><p>No queries submitted yet.</p></div>';return;}
+  el.innerHTML=[...DATA.queries].reverse().map(q=>`
+    <div class="query-card">
+      <div class="qc-top"><span class="qc-id mono">${q.id}</span>${qBadge(q.status)}</div>
+      <div class="qc-text">${q.text}</div>
+      <div class="qc-meta">${q.stage} · ${q.pump} · ${fmtDT(q.ts)}</div>
+      ${q.adminNote?`<div class="qc-admin-note"><strong>Admin:</strong> ${q.adminNote}</div>`:''}
+    </div>
+  `).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   ADMIN QUERIES
+═══════════════════════════════════════════════ */
+function renderAdminQueries() {
+  const search=(document.getElementById('qmgmt-search').value||'').toLowerCase();
+  const status=document.getElementById('qmgmt-status').value;
+  let queries=DATA.queries.filter(q=>{
+    const ms=!search||[q.id,q.text,q.stage,q.pump,q.submitter].some(v=>v&&v.toLowerCase().includes(search));
+    return ms&&(!status||q.status===status);
+  });
+  const el=document.getElementById('admin-queries-list');
+  if(!queries.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>No Queries</h3><p>No queries match the current filter.</p></div>`;return;}
+  el.innerHTML=[...queries].reverse().map(q=>`
+    <div class="query-admin-item">
+      <div class="qai-row1"><span class="qai-id mono">${q.id}</span>${qBadge(q.status)}</div>
+      <div class="qai-info"><span>${q.stage}</span><span>·</span><span>${q.pump}</span><span>·</span><span>${q.submitter||'—'}</span><span>·</span><span>${fmtDT(q.ts)}</span></div>
+      <div class="qai-text">${q.text}</div>
+      ${q.adminNote?`<div class="qai-admin-note"><strong>Admin Note:</strong> ${q.adminNote}</div>`:''}
+      <div class="qai-actions">
+        <button class="btn btn-secondary btn-xs" onclick="openQueryRespond('${q.id}')">Respond</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteQuery('${q.id}')">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+function openQueryRespond(id) {
+  const q=DATA.queries.find(x=>x.id===id);
+  document.getElementById('qr-id').value=id;
+  document.getElementById('qr-status').value=q.status;
+  document.getElementById('qr-note').value=q.adminNote||'';
+  openModal('modal-qr');
+}
+function saveQueryResponse() {
+  const id=document.getElementById('qr-id').value;
+  const idx=DATA.queries.findIndex(q=>q.id===id);
+  DATA.queries[idx].status=document.getElementById('qr-status').value;
+  DATA.queries[idx].adminNote=document.getElementById('qr-note').value.trim();
+  saveData(); closeModal('modal-qr'); renderAdminQueries(); renderDashboard();
+  showToast('Query updated','');
+}
+function deleteQuery(id) {
+  showConfirm('Delete this query?',()=>{
+    DATA.queries=DATA.queries.filter(q=>q.id!==id);
+    saveData(); renderAdminQueries(); renderDashboard();
+    showToast('Query deleted','');
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   HISTORY
+═══════════════════════════════════════════════ */
+function openAddLogModal() {
+  document.getElementById('lm-id').value='';
+  document.getElementById('lm-title').textContent='Add Log Entry';
+  document.getElementById('lm-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('lm-type').value='Maintenance';
+  ['lm-pump','lm-desc','lm-staff'].forEach(id=>document.getElementById(id).value='');
+  openModal('modal-log');
+}
+function openEditLogModal(id) {
+  const l=DATA.logs.find(x=>x.id===id);
+  if(!l) return;
+  document.getElementById('lm-id').value=id;
+  document.getElementById('lm-title').textContent='Edit Log Entry';
+  document.getElementById('lm-type').value=l.type||'Maintenance';
+  document.getElementById('lm-date').value=l.date||'';
+  document.getElementById('lm-pump').value=l.pump||'';
+  document.getElementById('lm-desc').value=l.desc||'';
+  document.getElementById('lm-staff').value=l.staff||'';
+  openModal('modal-log');
+}
+function saveLog() {
+  const id=document.getElementById('lm-id').value;
+  const desc=document.getElementById('lm-desc').value.trim();
+  if(!desc) return showToast('Description required','');
+  const obj={
+    type:document.getElementById('lm-type').value,
+    date:document.getElementById('lm-date').value,
+    pump:document.getElementById('lm-pump').value.trim(),
+    desc, staff:document.getElementById('lm-staff').value.trim(),
+    ts:new Date().toISOString()
+  };
+  if(id){
+    const idx=DATA.logs.findIndex(x=>x.id===id);
+    DATA.logs[idx]={...DATA.logs[idx],...obj};
+  } else {
+    DATA.logs.unshift({id:uid(),...obj});
+  }
+  saveData(); closeModal('modal-log'); renderHistory();
+  showToast(id?'Log updated':'Log added','');
+}
+function deleteLog(id) {
+  showConfirm('Delete this log entry?',()=>{
+    DATA.logs=DATA.logs.filter(x=>x.id!==id);
+    saveData(); renderHistory();
+    showToast('Log deleted','');
+  });
+}
+function renderHistory() {
+  const filter=document.getElementById('log-filter').value;
+  const logs=DATA.logs.filter(l=>!filter||l.type===filter);
+  const el=document.getElementById('history-list');
+  if(!logs.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4M3 3v5h5"/></svg></div><h3>No Logs</h3><p>No entries match filter.</p></div>`;return;}
+  const typeBg={Maintenance:'rgba(5,150,105,.1)',Repair:'rgba(217,119,6,.1)',Breakdown:'rgba(220,38,38,.1)','Status Update':'rgba(14,165,233,.1)',Inspection:'rgba(124,58,237,.1)',Other:'rgba(13,148,136,.1)'};
+  const typeCol={Maintenance:'var(--success)',Repair:'var(--warning)',Breakdown:'var(--danger)','Status Update':'var(--aqua)',Inspection:'var(--standby)',Other:'var(--teal)'};
+  const typeIcBg={Maintenance:'rgba(5,150,105,.15)',Repair:'rgba(217,119,6,.15)',Breakdown:'rgba(220,38,38,.15)','Status Update':'rgba(14,165,233,.15)',Inspection:'rgba(124,58,237,.15)',Other:'rgba(13,148,136,.15)'};
+  const icons={
+    Maintenance:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"/>',
+    Repair:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+    Breakdown:'<polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+    'Status Update':'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>',
+    Inspection:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+    Other:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>'
+  };
+  el.innerHTML=logs.map(l=>`
+    <div class="log-item">
+      <div class="log-icon" style="background:${typeIcBg[l.type]||typeIcBg.Other};color:${typeCol[l.type]||typeCol.Other}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[l.type]||icons.Other}</svg>
+      </div>
+      <div class="log-content">
+        <span class="log-type-pill" style="background:${typeBg[l.type]||typeBg.Other};color:${typeCol[l.type]||typeCol.Other}">${l.type}</span>
+        ${l.pump?`<span style="font-size:11.5px;font-weight:700;color:var(--ink2);margin-left:6px">${l.pump}</span>`:''}
+        <div class="log-desc">${l.desc}</div>
+        ${l.staff?`<div class="log-staff"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${l.staff}</div>`:''}
+        ${isAdmin()?`<div class="log-actions">
+          <button class="btn btn-secondary btn-xs" onclick="openEditLogModal('${l.id}')">Edit</button>
+          <button class="btn btn-danger btn-xs" onclick="deleteLog('${l.id}')">Delete</button>
+        </div>`:''}
+      </div>
+      <div class="log-date">${fmtDate(l.date)}</div>
+    </div>
+  `).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════════════ */
+function renderContact() {
+  const c=DATA.contact;
+  const fields=[
+    {l:'Station Name', v:c.station},{l:'Location',v:c.location},
+    {l:'Contact',v:c.phone},{l:'Email',v:c.email},
+    {l:'Engineer',v:c.engineer},{l:'Operator',v:c.operator},
+    {l:'Emergency',v:c.emergency},{l:'Supervisor',v:c.supervisor},
+  ];
+  document.getElementById('contact-grid').innerHTML=fields.map(f=>`<div class="contact-card"><div class="cc-label">${f.l}</div><div class="cc-value">${f.v||'—'}</div></div>`).join('');
+  document.getElementById('contact-notes').textContent=c.notes||'No additional notes.';
+}
+function editContact() {
+  const c=DATA.contact;
+  document.getElementById('c-station').value=c.station||'';
+  document.getElementById('c-loc').value=c.location||'';
+  document.getElementById('c-phone').value=c.phone||'';
+  document.getElementById('c-email').value=c.email||'';
+  document.getElementById('c-eng').value=c.engineer||'';
+  document.getElementById('c-op').value=c.operator||'';
+  document.getElementById('c-emg').value=c.emergency||'';
+  document.getElementById('c-sup').value=c.supervisor||'';
+  document.getElementById('c-notes').value=c.notes||'';
+  openModal('modal-contact');
+}
+function saveContact() {
+  DATA.contact={
+    station:document.getElementById('c-station').value.trim(),
+    location:document.getElementById('c-loc').value.trim(),
+    phone:document.getElementById('c-phone').value.trim(),
+    email:document.getElementById('c-email').value.trim(),
+    engineer:document.getElementById('c-eng').value.trim(),
+    operator:document.getElementById('c-op').value.trim(),
+    emergency:document.getElementById('c-emg').value.trim(),
+    supervisor:document.getElementById('c-sup').value.trim(),
+    notes:document.getElementById('c-notes').value.trim()
+  };
+  saveData(); closeModal('modal-contact'); renderContact();
+  showToast('Contact info updated','');
+}
+
+/* ═══════════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════════ */
+function loadSettings() {
+  document.getElementById('set-title').value=DATA.settings.stationTitle||'';
+  document.getElementById('set-sub').value=DATA.settings.subtitle||'';
+  document.getElementById('set-notice').value=DATA.settings.notice||'';
+}
+function saveSettings() {
+  DATA.settings.stationTitle=document.getElementById('set-title').value.trim()||DATA.settings.stationTitle;
+  DATA.settings.subtitle=document.getElementById('set-sub').value.trim();
+  DATA.settings.notice=document.getElementById('set-notice').value.trim();
+  saveData(); showToast('Settings saved','');
+}
+function exportData() {
+  const blob=new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='gumma-data-'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+}
+function resetData() {
+  showConfirm('Reset ALL data to defaults? This cannot be undone.',()=>{
+    DATA=JSON.parse(JSON.stringify(DEFAULT_DATA));
+    saveData(); renderDashboard();
+    showToast('Data reset to defaults','');
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD EDIT
+═══════════════════════════════════════════════ */
+document.getElementById('modal-dash-edit').querySelector('.modal-close').onclick=()=>closeModal('modal-dash-edit');
+// Pre-fill on open
+const origOpen=openModal;
+// Pre-populate dash edit modal
+document.getElementById('modal-dash-edit').addEventListener('click',()=>{},{once:false});
+
+// When modal-dash-edit opens via onclick, populate fields
+const dashEditModal=document.getElementById('modal-dash-edit');
+const origModalOpen=dashEditModal.querySelector('.modal-close').onclick;
+// Override openModal for dash-edit
+const _origOpenModal=openModal;
+function openModal(id) {
+  if(id==='modal-dash-edit'){
+    document.getElementById('de-title').value=DATA.settings.stationTitle;
+    document.getElementById('de-sub').value=DATA.settings.subtitle;
+    document.getElementById('de-notice').value=DATA.settings.notice;
+  }
+  document.getElementById(id).classList.add('open');
+}
+
+/* ═══════════════════════════════════════════════
+   PWA: SERVICE WORKER + INSTALL
+═══════════════════════════════════════════════ */
+let deferredPrompt = null;
+
+/* ── Service Worker Registration ─────────────────────────────
+   Only registers when:
+   1. Browser supports service workers
+   2. Page is served over HTTPS (required by spec)
+   3. NOT running inside a preview/iframe origin
+      (e.g. claudeusercontent.com, localhost, file://)
+   This prevents the 404 console warning in preview
+   environments while still registering correctly on
+   your real deployed domain (GitHub Pages, Netlify etc.)
+──────────────────────────────────────────────────────────── */
+(function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+
+  const loc = window.location;
+
+  // Only register on real HTTPS deployments — skip previews & local
+  const isRealDeploy = (
+    loc.protocol === 'https:' &&
+    !loc.hostname.includes('claudeusercontent.com') &&
+    !loc.hostname.includes('localhost') &&
+    !loc.hostname.includes('127.0.0.1') &&
+    loc.protocol !== 'file:'
+  );
+
+  if (!isRealDeploy) return; // silently skip — no console error
+
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('sw.js', { scope: './' })
+      .then(reg => {
+        // Periodic update check every 60 s
+        setInterval(() => reg.update(), 60000);
+      })
+      .catch(() => {
+        // Silently fail — app works fine without SW
+      });
+  });
+}());
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e;
+  document.getElementById('install-banner').classList.add('show');
+});
+document.getElementById('install-btn').onclick=async()=>{
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    const result=await deferredPrompt.userChoice;
+    deferredPrompt=null;
+    document.getElementById('install-banner').classList.remove('show');
+  }
+};
+window.addEventListener('appinstalled',()=>document.getElementById('install-banner').classList.remove('show'));
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+(function init() {
+  const s=loadSession();
+  if(s){
+    SESSION=s;
+    document.getElementById('login-page').style.display='none';
+    enterApp(s);
+  } else {
+    document.getElementById('login-page').style.display='flex';
+  }
+})();
+</script>
+</body>
+</html>
