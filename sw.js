@@ -1,86 +1,95 @@
 /* ============================================================
    Gumma Pumping Station — Service Worker
-   Strategy: Cache-first for assets, Network-first for HTML
-   PWABuilder compatible — passes all SW checks
+   All paths are RELATIVE — works at any subfolder depth
+   Compatible with GitHub Pages subfolders & Netlify root
 ============================================================ */
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_STATIC  = `gumma-static-${CACHE_VERSION}`;
 const CACHE_DYNAMIC = `gumma-dynamic-${CACHE_VERSION}`;
 
-// Core assets to pre-cache on install
+// Derive base path from sw.js location — works at any depth
+const SW_BASE = self.location.pathname.replace('sw.js', '');
+
 const PRECACHE_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/icons/icon-maskable-512.png',
-  '/screenshots/screenshot-login-mobile.png',
-  '/screenshots/screenshot-dashboard-mobile.png'
+  SW_BASE,
+  SW_BASE + 'index.html',
+  SW_BASE + 'manifest.json',
+  SW_BASE + 'icons/icon-192.png',
+  SW_BASE + 'icons/icon-512.png',
+  SW_BASE + 'icons/icon-maskable-512.png',
+  SW_BASE + 'screenshots/screenshot-login-mobile.png',
+  SW_BASE + 'screenshots/screenshot-dashboard-mobile.png'
 ];
 
-// ── Install: pre-cache all core assets ───────────────────────
+// ── Install ───────────────────────────────────────────────────
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_STATIC)
-      .then(cache => cache.addAll(PRECACHE_ASSETS))
+      .then(cache => {
+        // addAll fails if ANY asset 404s — use individual puts to be safe
+        return Promise.allSettled(
+          PRECACHE_ASSETS.map(url =>
+            fetch(url).then(res => {
+              if (res.ok) cache.put(url, res);
+            }).catch(() => {})
+          )
+        );
+      })
       .then(() => self.skipWaiting())
   );
 });
 
-// ── Activate: delete old caches ──────────────────────────────
+// ── Activate: clean old caches ────────────────────────────────
 self.addEventListener('activate', event => {
   const VALID = [CACHE_STATIC, CACHE_DYNAMIC];
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
-        keys
-          .filter(k => !VALID.includes(k))
-          .map(k => caches.delete(k))
+        keys.filter(k => !VALID.includes(k)).map(k => caches.delete(k))
       ))
       .then(() => self.clients.claim())
   );
 });
 
-// ── Fetch: smart routing strategy ────────────────────────────
+// ── Fetch: smart routing ──────────────────────────────────────
 self.addEventListener('fetch', event => {
   const { request } = event;
-
-  // Only handle GET requests
   if (request.method !== 'GET') return;
 
-  // Skip cross-origin requests (e.g. Google Fonts)
   const url = new URL(request.url);
+
+  // Skip cross-origin (Google Fonts etc.)
   if (url.origin !== self.location.origin) return;
 
-  // HTML → Network-first (always fresh app shell)
+  // HTML → Network-first, fallback to cache
   if (request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
       fetch(request)
-        .then(response => {
-          const clone = response.clone();
-          caches.open(CACHE_STATIC).then(cache => cache.put(request, clone));
-          return response;
+        .then(res => {
+          caches.open(CACHE_STATIC).then(c => c.put(request, res.clone()));
+          return res;
         })
-        .catch(() => caches.match(request).then(r => r || caches.match('/index.html')))
+        .catch(() =>
+          caches.match(request)
+            .then(r => r || caches.match(SW_BASE + 'index.html'))
+        )
     );
     return;
   }
 
-  // Icons / screenshots / manifest → Cache-first
+  // Static assets → Cache-first
   if (
-    url.pathname.startsWith('/icons/') ||
-    url.pathname.startsWith('/screenshots/') ||
-    url.pathname === '/manifest.json'
+    url.pathname.includes('/icons/') ||
+    url.pathname.includes('/screenshots/') ||
+    url.pathname.endsWith('manifest.json')
   ) {
     event.respondWith(
       caches.match(request).then(cached => {
         if (cached) return cached;
-        return fetch(request).then(response => {
-          const clone = response.clone();
-          caches.open(CACHE_STATIC).then(cache => cache.put(request, clone));
-          return response;
+        return fetch(request).then(res => {
+          caches.open(CACHE_STATIC).then(c => c.put(request, res.clone()));
+          return res;
         });
       })
     );
@@ -91,37 +100,31 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.open(CACHE_DYNAMIC).then(cache =>
       cache.match(request).then(cached => {
-        const fetchPromise = fetch(request).then(response => {
-          cache.put(request, response.clone());
-          return response;
+        const network = fetch(request).then(res => {
+          cache.put(request, res.clone());
+          return res;
         }).catch(() => cached);
-        return cached || fetchPromise;
+        return cached || network;
       })
     )
   );
 });
 
-// ── Background sync placeholder (PWABuilder check) ───────────
-self.addEventListener('sync', event => {
-  if (event.tag === 'gumma-sync') {
-    // Future: sync offline query submissions
-    event.waitUntil(Promise.resolve());
-  }
-});
-
-// ── Push notifications placeholder (PWABuilder check) ────────
+// ── Push notifications ────────────────────────────────────────
 self.addEventListener('push', event => {
-  const data = event.data?.json() ?? { title: 'Gumma Station', body: 'New update available.' };
+  const data = event.data?.json() ?? {
+    title: 'Gumma Station',
+    body: 'New update available.'
+  };
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: '/icons/icon-192.png',
-      badge: '/icons/icon-96.png'
+      icon: SW_BASE + 'icons/icon-192.png',
+      badge: SW_BASE + 'icons/icon-96.png'
     })
   );
 });
 
-// ── Notification click ────────────────────────────────────────
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil(
@@ -129,7 +132,13 @@ self.addEventListener('notificationclick', event => {
       for (const c of cs) {
         if (c.url && 'focus' in c) return c.focus();
       }
-      if (clients.openWindow) return clients.openWindow('/');
+      if (clients.openWindow) return clients.openWindow(SW_BASE);
     })
   );
+});
+
+self.addEventListener('sync', event => {
+  if (event.tag === 'gumma-sync') {
+    event.waitUntil(Promise.resolve());
+  }
 });

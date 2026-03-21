@@ -2,8 +2,8 @@
   "name": "Gumma Pumping Station Management System",
   "short_name": "Gumma Station",
   "description": "A professional pump operations and management system for Gumma Pumping Station. Monitor pump status, manage stages, submit queries, and track maintenance history in real time.",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui", "browser"],
   "background_color": "#0b1e35",
@@ -29,24 +29,24 @@
     { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "screenshots": [
-    { "src": "screenshots/screenshot-login-mobile.png",     "sizes": "390x844",   "type": "image/png", "form_factor": "narrow", "label": "Login Screen" },
-    { "src": "screenshots/screenshot-dashboard-mobile.png", "sizes": "390x844",   "type": "image/png", "form_factor": "narrow", "label": "Live Dashboard" },
-    { "src": "screenshots/screenshot-login-wide.png",       "sizes": "1280x720",  "type": "image/png", "form_factor": "wide",   "label": "Login Screen — Desktop" },
-    { "src": "screenshots/screenshot-dashboard-wide.png",   "sizes": "1280x720",  "type": "image/png", "form_factor": "wide",   "label": "Dashboard — Desktop" }
+    { "src": "screenshots/screenshot-login-mobile.png",     "sizes": "390x844",  "type": "image/png", "form_factor": "narrow", "label": "Login Screen" },
+    { "src": "screenshots/screenshot-dashboard-mobile.png", "sizes": "390x844",  "type": "image/png", "form_factor": "narrow", "label": "Live Dashboard" },
+    { "src": "screenshots/screenshot-login-wide.png",       "sizes": "1280x720", "type": "image/png", "form_factor": "wide",   "label": "Login Screen — Desktop" },
+    { "src": "screenshots/screenshot-dashboard-wide.png",   "sizes": "1280x720", "type": "image/png", "form_factor": "wide",   "label": "Dashboard — Desktop" }
   ],
   "shortcuts": [
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
       "description": "Open the live pump status dashboard",
-      "url": "/index.html",
+      "url": "./index.html",
       "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
     },
     {
       "name": "Submit Query",
       "short_name": "Query",
       "description": "Submit a field query or remark",
-      "url": "/index.html",
+      "url": "./index.html",
       "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
     }
   ]

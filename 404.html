@@ -5,9 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gumma Pumping Station</title>
 <script>
-  // GitHub Pages SPA redirect: send all 404s back to index.html
-  sessionStorage.setItem('redirect', location.href);
-  location.replace('/');
+  // GitHub Pages SPA fallback — redirect all 404s back to index.html
+  // Works for both root and subfolder deployments
+  var path = window.location.pathname;
+  var search = window.location.search;
+  var hash = window.location.hash;
+  sessionStorage.setItem('pwa_redirect', path + search + hash);
+  // Find the base (everything up to and including the repo folder)
+  var base = path.substring(0, path.lastIndexOf('/') + 1);
+  window.location.replace(base + 'index.html');
 </script>
 </head>
 <body></body>

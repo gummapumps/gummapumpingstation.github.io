@@ -7,7 +7,7 @@
 <!-- ═══ PWA Core ═══ -->
 <meta name="theme-color" content="#0ea5e9">
 <meta name="background-color" content="#0b1e35">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 
 <!-- ═══ SEO / Description (PWABuilder checks this) ═══ -->
 <meta name="description" content="A professional pump operations and management system for Gumma Pumping Station. Monitor pump status, manage stages, submit queries, and track maintenance history in real time.">
@@ -19,7 +19,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Gumma Pumping Station Management System">
 <meta property="og:description" content="Professional pump operations and management system — monitor pump status, manage stages, submit queries, and track maintenance history.">
-<meta property="og:image" content="/icons/icon-512.png">
+<meta property="og:image" content="icons/icon-512.png">
 <meta property="og:locale" content="en_IN">
 
 <!-- ═══ Apple PWA ═══ -->
@@ -27,20 +27,20 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Gumma Station">
-<link rel="apple-touch-icon" href="/icons/icon-180.png">
-<link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png">
-<link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
 
 <!-- ═══ Favicons ═══ -->
-<link rel="icon" type="image/png" sizes="48x48"   href="/icons/icon-48.png">
-<link rel="icon" type="image/png" sizes="96x96"   href="/icons/icon-96.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+<link rel="icon" type="image/png" sizes="48x48"   href="icons/icon-48.png">
+<link rel="icon" type="image/png" sizes="96x96"   href="icons/icon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
 
 <!-- ═══ Microsoft / Windows ═══ -->
 <meta name="msapplication-TileColor" content="#0b1e35">
-<meta name="msapplication-TileImage" content="/icons/icon-144.png">
+<meta name="msapplication-TileImage" content="icons/icon-144.png">
 <meta name="msapplication-config" content="none">
 
 <title>Gumma Pumping Station Management System</title>
@@ -2606,7 +2606,7 @@ let deferredPrompt = null;
 
   window.addEventListener('load', () => {
     navigator.serviceWorker
-      .register('/sw.js', { scope: '/' })
+      .register('sw.js', { scope: './' })
       .then(reg => {
         // Periodic update check every 60 s
         setInterval(() => reg.update(), 60000);
