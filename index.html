@@ -3,16 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#0b1e35">
+
+<!-- ═══ PWA Core ═══ -->
+<meta name="theme-color" content="#0ea5e9">
+<meta name="background-color" content="#0b1e35">
+<link rel="manifest" href="/manifest.json">
+
+<!-- ═══ SEO / Description (PWABuilder checks this) ═══ -->
+<meta name="description" content="A professional pump operations and management system for Gumma Pumping Station. Monitor pump status, manage stages, submit queries, and track maintenance history in real time.">
+<meta name="keywords" content="pump management, pumping station, water supply, Gumma, operations, maintenance">
+<meta name="author" content="Gumma Pumping Station">
+<meta name="application-name" content="Gumma Station">
+
+<!-- ═══ Open Graph (PWABuilder uses these) ═══ -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gumma Pumping Station Management System">
+<meta property="og:description" content="Professional pump operations and management system — monitor pump status, manage stages, submit queries, and track maintenance history.">
+<meta property="og:image" content="/icons/icon-512.png">
+<meta property="og:locale" content="en_IN">
+
+<!-- ═══ Apple PWA ═══ -->
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Gumma Station">
-<meta name="description" content="Gumma Pumping Station Management System">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<title>Gumma Pumping Station</title>
+<link rel="apple-touch-icon" href="/icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
+
+<!-- ═══ Favicons ═══ -->
+<link rel="icon" type="image/png" sizes="48x48"   href="/icons/icon-48.png">
+<link rel="icon" type="image/png" sizes="96x96"   href="/icons/icon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+
+<!-- ═══ Microsoft / Windows ═══ -->
+<meta name="msapplication-TileColor" content="#0b1e35">
+<meta name="msapplication-TileImage" content="/icons/icon-144.png">
+<meta name="msapplication-config" content="none">
+
+<title>Gumma Pumping Station Management System</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════
@@ -2545,10 +2576,46 @@ function openModal(id) {
 /* ═══════════════════════════════════════════════
    PWA: SERVICE WORKER + INSTALL
 ═══════════════════════════════════════════════ */
-let deferredPrompt=null;
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-}
+let deferredPrompt = null;
+
+/* ── Service Worker Registration ─────────────────────────────
+   Only registers when:
+   1. Browser supports service workers
+   2. Page is served over HTTPS (required by spec)
+   3. NOT running inside a preview/iframe origin
+      (e.g. claudeusercontent.com, localhost, file://)
+   This prevents the 404 console warning in preview
+   environments while still registering correctly on
+   your real deployed domain (GitHub Pages, Netlify etc.)
+──────────────────────────────────────────────────────────── */
+(function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+
+  const loc = window.location;
+
+  // Only register on real HTTPS deployments — skip previews & local
+  const isRealDeploy = (
+    loc.protocol === 'https:' &&
+    !loc.hostname.includes('claudeusercontent.com') &&
+    !loc.hostname.includes('localhost') &&
+    !loc.hostname.includes('127.0.0.1') &&
+    loc.protocol !== 'file:'
+  );
+
+  if (!isRealDeploy) return; // silently skip — no console error
+
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js', { scope: '/' })
+      .then(reg => {
+        // Periodic update check every 60 s
+        setInterval(() => reg.update(), 60000);
+      })
+      .catch(() => {
+        // Silently fail — app works fine without SW
+      });
+  });
+}());
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault(); deferredPrompt=e;
   document.getElementById('install-banner').classList.add('show');
